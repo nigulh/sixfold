@@ -1,4 +1,4 @@
-let SphereDistanceCalculator = require("../SphereDistanceCalculator").SphereDistanceCalculator;
+SphereDistanceCalculator = require("../src/SphereDistanceCalculator");
 
 describe('Sphere distance', () => {
     it('distance to self is zero', () => {

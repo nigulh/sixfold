@@ -17,4 +17,4 @@ class SphereDistanceCalculator {
     }
 }
 
-exports.SphereDistanceCalculator = SphereDistanceCalculator;
+module.exports = SphereDistanceCalculator;
