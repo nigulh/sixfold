@@ -4,9 +4,12 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+
+
 class SphereDistanceCalculator {
-    findDistance(latitude1, longitude1, latitude2, longitude2) {
-        return 0.0;
+    findDistance(x1, y1, x2, y2) {
+        let d = Math.acos(Math.sin(y1) * Math.sin(y2) + Math.cos(y1) * Math.cos(y2) * Math.cos(x2-x1));
+        return d;
     }
 }
 
