@@ -12,5 +12,15 @@ services:
       - ./src:/usr/app/src:delegated
       - ./__tests__:/usr/app/__tests__:delegated
 
+  swagger:
+    image: "swaggerapi/swagger-ui"
+    ports:
+      - "3080:8080"
+    volumes:
+      - ./api:/api
+    environment:
+      SWAGGER_JSON: /api/api.json
+
+
 # export BUILDKIT_PROGRESS=plain; docker-compose up
 # docker-compose rm --all && docker-compose pull && docker-compose build --no-cache && docker-compose up -d --force-recreate
