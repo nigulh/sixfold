@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nodejs:
-    image: "nigulh:sixfold"
+    image: "nigulh/sixfold"
     build:
       context: '.'
       dockerfile: "./Dockerfile"
@@ -19,7 +19,7 @@ services:
     volumes:
       - ./api:/api
     environment:
-      SWAGGER_JSON: /api/api.json
+      SWAGGER_JSON: /api/swagger.json
 
 
 # export BUILDKIT_PROGRESS=plain; docker-compose up
