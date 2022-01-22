@@ -33,3 +33,15 @@
  *         schema:
  *           $ref: '#/components/schemas/pingResponse'
  */
+
+module.exports = function(app)
+{
+    app.get('/', (req, res) => {
+        res.send('Hello World!!');
+    });
+    app.get('/ping/:message', (req, res) => {
+        let message = req.params.message;
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({echo: message + message}));
+    });
+}
