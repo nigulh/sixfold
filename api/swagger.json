@@ -17,26 +17,24 @@
           "ping"
         ],
         "summary": "Echo the path parameter",
+        "description": "For testing only",
         "parameters": [
           {
             "name": "message",
             "in": "path",
             "description": "Message to echo",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
+        ],
+        "produces": [
+          "application/json"
         ],
         "responses": {
           "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/pingResponse"
-                }
-              }
+            "description": "Double echo response",
+            "schema": {
+              "$ref": "#/components/schemas/pingResponse"
             }
           }
         }
@@ -54,9 +52,9 @@
             "type": "string",
             "example": "hello"
           }
-        },
-        "type": "object"
+        }
       }
     }
-  }
+  },
+  "tags": []
 }

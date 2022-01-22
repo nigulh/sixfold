@@ -1,30 +1,35 @@
 /**
  * @swagger
- * definitions:
- *   Puppy:
- *     properties:
- *       name:
- *         type: string
- *       breed:
- *         type: string
- *       age:
- *         type: integer
- *       sex:
- *         type: string
+ * components:
+ *   schemas:
+ *     pingResponse:
+ *       required:
+ *         - echo
+ *       properties:
+ *         echo:
+ *           type: string
+ *           example: hello
  */
 
 /**
  * @swagger
- * /api/puppies:
+ * /ping/{message}:
  *   get:
  *     tags:
- *       - Puppies
- *     description: Returns all puppies
+ *       - ping
+ *     summary: Echo the path parameter
+ *     description: For testing only
+ *     parameters:
+ *       - name: message
+ *         in: path
+ *         description: Message to echo
+ *         required: true
+ *         type: string
  *     produces:
  *       - application/json
  *     responses:
  *       200:
- *         description: An array of puppies
+ *         description: Double echo response
  *         schema:
- *           $ref: '#/definitions/Puppy'
+ *           $ref: '#/components/schemas/pingResponse'
  */
