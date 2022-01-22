@@ -4,14 +4,16 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "swagger": "node src/generateSwagger.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.16.1"
+    "express": "^4.16.1",
+    "swagger-jsdoc": "^6.1.0"
   },
   "devDependencies": {
     "jest": "^27.4.7"
