@@ -9,6 +9,7 @@ WORKDIR /usr/app
 COPY package*.json ./
 
 RUN npm install
+RUN npm install -g nodemon
 #RUN npm install jest --global
 # If you are building your code for production
 # RUN npm ci --only=production
@@ -17,5 +18,4 @@ RUN npm install
 # COPY . .
 
 EXPOSE 8080
-CMD [ "node", "src/server.js" ]
-#CMD [ "node", "sandbox/hello.js" ]
+CMD [ "nodemon", "src/server.js" ]
