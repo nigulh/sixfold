@@ -1,4 +1,4 @@
-SphereDistanceCalculator = require("../src/SphereDistanceCalculator");
+import {SphereDistanceCalculator} from "../src/SphereDistanceCalculator";
 
 let calculator = new SphereDistanceCalculator();
 
