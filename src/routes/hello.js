@@ -26,7 +26,6 @@ module.exports = function(app)
     });
     app.get('/ping/:message', (req, res) => {
         let message = req.params.message;
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(new PingResponse(message)));
+        res.send(new PingResponse(message));
     });
 }
