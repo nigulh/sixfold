@@ -2,7 +2,7 @@
   "name": "sixfold",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.js",
+  "main": "dist/server.js",
   "scripts": {
     "build": "rimraf dist && tsc",
     "preserve": "npm run swagger",
