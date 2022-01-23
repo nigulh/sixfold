@@ -1,13 +1,5 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-
-
-class SphereDistanceCalculator {
-    findDistance(n1, e1, n2, e2) {
+export class SphereDistanceCalculator {
+    findDistance(n1: number, e1: number, n2: number, e2: number) {
         let N1 = n1 * Math.PI / 180;
         let E1 = e1 * Math.PI / 180;
         let N2 = n2 * Math.PI / 180;
@@ -16,5 +8,3 @@ class SphereDistanceCalculator {
         return d;
     }
 }
-
-module.exports = SphereDistanceCalculator;
