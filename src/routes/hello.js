@@ -34,6 +34,7 @@
  *           $ref: '#/components/schemas/pingResponse'
  */
 
+const {PingResponse} = require("../models/echo");
 module.exports = function(app)
 {
     app.get('/', (req, res) => {
@@ -42,6 +43,6 @@ module.exports = function(app)
     app.get('/ping/:message', (req, res) => {
         let message = req.params.message;
         res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({echo: message + message}));
+        res.send(JSON.stringify(new PingResponse(message)));
     });
 }

@@ -11,6 +11,7 @@ services:
     volumes:
       - ./src:/usr/app/src:delegated
       - ./__tests__:/usr/app/__tests__:delegated
+      - ./tsconfig.json:/usr/app/tsconfig.json:delegated
 
   swagger:
     image: "swaggerapi/swagger-ui"
