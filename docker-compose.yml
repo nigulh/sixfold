@@ -9,6 +9,7 @@ services:
     ports:
       - "3033:8080"
     volumes:
+      - ./api:/usr/app/api:delegated
       - ./src:/usr/app/src:delegated
       - ./__tests__:/usr/app/__tests__:delegated
       - ./tsconfig.json:/usr/app/tsconfig.json:delegated
