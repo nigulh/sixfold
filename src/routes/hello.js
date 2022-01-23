@@ -19,13 +19,17 @@
  */
 
 const {PingResponse} = require("../models/echo");
-module.exports = function(app)
+const router = require('express').Router();
+
+//module.exports = function()
 {
-    app.get('/', (req, res) => {
+    router.get('/', (req, res) => {
         res.send('Hello World!!');
     });
-    app.get('/ping/:message', (req, res) => {
+    router.get('/ping/:message', (req, res) => {
         let message = req.params.message;
         res.send(new PingResponse(message));
     });
 }
+
+module.exports = router;

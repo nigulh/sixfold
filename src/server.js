@@ -1,8 +1,8 @@
 'use strict';
 
-const app = require('express')();
+let app = require('express')();
 app.use(require('cors')());
-
-require('./routes/hello')(app);
+app.use(require('./routes/hello'));
 
 module.exports = app.listen(8080, '0.0.0.0');
+
