@@ -1,13 +1,8 @@
 'use strict';
 
-const express = require('express');
-const cors = require('cors');
-
-const app = express();
-app.use(cors());
+const app = require('express')();
+app.use(require('cors')());
 
 require('./routes/hello')(app);
 
-let server = app.listen(8080, '0.0.0.0');
-
-module.exports = server;
+module.exports = app.listen(8080, '0.0.0.0');
