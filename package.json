@@ -4,6 +4,9 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
+    "build": "rimraf dist && tsc",
+    "prestart": "npm run build",
+    "start": "concurrently \"tsc --watch\" \"nodemon -q dist/server.js\"",
     "test": "jest",
     "swagger": "node src/generateSwagger.js"
   },

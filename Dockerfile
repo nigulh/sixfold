@@ -18,4 +18,4 @@ RUN npm install -g nodemon concurrently
 # COPY . .
 
 EXPOSE 8080
-CMD [ "npm", "run", "serve" ]
+CMD [ "npm", "run", "start" ]
