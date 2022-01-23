@@ -13,9 +13,11 @@
  *         required: true
  *     responses:
  *       200:
- *         description: Double echo response
- *         schema:
- *           $ref: '#/components/schemas/pingResponse'
+ *         description: Echo response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/pingResponse'
  */
 
 const {PingResponse} = require("../models/echo");

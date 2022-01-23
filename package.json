@@ -5,8 +5,11 @@
   "main": "src/server.js",
   "scripts": {
     "build": "rimraf dist && tsc",
-    "prestart": "npm run build && npm run swagger",
-    "start": "concurrently \"tsc --watch\" \"nodemon -q dist/server.js\"",
+    "preserve": "npm run swagger",
+    "serve": "node dist/server.js",
+    "nodemon": "nodemon --watch src/ --exec \"npm run serve\"",
+    "prestart": "npm install",
+    "start": "concurrently \"tsc --watch\" \"npm run nodemon\"",
     "test": "jest",
     "swagger": "node src/generateSwagger.js"
   },
