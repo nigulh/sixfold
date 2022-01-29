@@ -1,5 +1,7 @@
 import {getAllAirports} from '../Database'
 import {Airport} from "../models/Airport";
+import { parse } from 'csv-parse/sync';
+//const parse = require('csv-parse/sync').parse;
 
 export class AirportProvider
 {
@@ -8,7 +10,8 @@ export class AirportProvider
 
     findAll() {
         let allAirports = getAllAirports();
-        return allAirports.split("\n").map(this.convertCsvToAirport);
+        let ret = parse(allAirports, {columns: false}).map(this.mapToAirport);
+        return ret;
     }
 
     findById(id: string)
@@ -16,8 +19,7 @@ export class AirportProvider
         return this.findAll().find(x => x.iataCode == id);
     }
 
-    private convertCsvToAirport(row) {
-        let data = JSON.parse("[" + row + "]");
-        return new Airport(data[4], data[1], data[2], data[3], data[6], data[7]);
+    private mapToAirport(data: any[]): Airport {
+        return new Airport(data[4], data[1], data[2], data[3], parseFloat(data[6]), parseFloat(data[7]));
     }
 }
