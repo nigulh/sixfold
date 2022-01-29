@@ -1,4 +1,4 @@
-import {getAllAirports} from '../Database'
+import {getAllAirports, getAllAirportsAsync} from '../Database'
 import { parse } from 'csv-parse';
 import {Airport} from "../models/Airport";
 
@@ -13,10 +13,29 @@ export class AirportProvider
         return rows.map(this.mapToAirport);
     }
 
-    async findById(id: string)
+    findAllAsync() {
+        return new Promise<Array<Airport>>((resolve, reject) => {
+           getAllAirportsAsync().then((allAirports) => {
+              resolve(this.parseCsv(allAirports).map(this.mapToAirport));
+           });
+        });
+    }
+
+    findById(id: string)
     {
-        let data = await this.findAll();
-        return data.find(x => x.iataCode == id);
+        return new Promise<Airport>((resolve, reject) => {
+            this.findAllAsync().then(data => {
+                let item = data.find(x => x.iataCode == id);
+                if (item === undefined)
+                {
+                    reject("Could not find Airport " + id + "!");
+                }
+                else
+                {
+                    resolve(item);
+                }
+            });
+        })
     }
 
     private parseCsv(allAirports: string) {
