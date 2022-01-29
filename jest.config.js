@@ -4,5 +4,6 @@ module.exports = {
   testEnvironment: 'node',
   moduleNameMapper: {
     "^src/(.*)$": "dist/$1"
-  }
+  },
+  //extensionsToTreatAsEsm: [".ts"] // https://stackoverflow.com/questions/70328779/typescript-with-jest-cannot-detect-library
 };

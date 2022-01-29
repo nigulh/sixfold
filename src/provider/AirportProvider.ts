@@ -1,23 +1,40 @@
 import {getAllAirports} from '../Database'
+import { parse } from 'csv-parse';
 import {Airport} from "../models/Airport";
-//import { parse } from 'csv-parse/sync';
-//const parse = require('csv-parse/sync').parse;
 
 export class AirportProvider
 {
     constructor() {
     }
 
-    findAll() {
+    async findAll() {
         let allAirports = getAllAirports();
-        //let ret = parse(allAirports, {columns: false}).map(this.mapToAirport);
-        let ret = [new Airport("E", "2", "3", "4", 5, 6)];
-        return ret;
+        let rows = this.parseCsv(allAirports);
+        return rows.map(this.mapToAirport);
     }
 
-    findById(id: string)
+    async findById(id: string)
     {
-        return this.findAll().find(x => x.iataCode == id);
+        let data = await this.findAll();
+        return data.find(x => x.iataCode == id);
+    }
+
+    private parseCsv(allAirports: string) {
+        const rows = [];
+        const parser = parse({delimiter: ','});
+        parser.on('readable', () => {
+            let row;
+            while ((row = parser.read()) !== null) {
+                // @ts-ignore
+                rows.push(row);
+            }
+        });
+        parser.on('error', function(err){
+            console.error(err.message);
+        });
+        parser.write(allAirports);
+        parser.end();
+        return rows;
     }
 
     private mapToAirport(data: any[]): Airport {
