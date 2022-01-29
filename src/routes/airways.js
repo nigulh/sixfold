@@ -21,7 +21,7 @@ let airportProvider = new AirportProvider();
  *                 $ref: '#/components/schemas/airport'
  */
 router.get('/airports', (req, res) => {
-    airportProvider.findAllAsync().then((x) => {
+    airportProvider.findAll().then((x) => {
         res.send(x);
     })
 });
