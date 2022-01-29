@@ -20,7 +20,7 @@
  *               $ref: '#/components/schemas/pingResponse'
  */
 
-const {PingResponse} = require("../models/echo");
+const {PingResponse} = require("../models/Echo");
 const router = require('express').Router();
 
 //module.exports = function()

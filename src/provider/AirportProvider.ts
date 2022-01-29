@@ -1,5 +1,5 @@
 import {getAllAirports} from '../Database'
-import {Airport} from "../models/airport";
+import {Airport} from "../models/Airport";
 
 export class AirportProvider
 {

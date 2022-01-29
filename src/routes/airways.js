@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {AirportProvider} = require("../database/AirportProvider");
+const {AirportProvider} = require("../provider/AirportProvider");
 
 let airportProvider = new AirportProvider();
 
