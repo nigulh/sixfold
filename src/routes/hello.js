@@ -28,9 +28,27 @@ const router = require('express').Router();
     router.get('/', (req, res) => {
         res.send('Hello World!!');
     });
-    router.get('/ping/:message', (req, res) => {
+    router.get('/ping/:message', (req, res, next) => {
         let message = req.params.message;
-        res.send(new PingResponse(message));
+        findResponse(message).then((x) => {
+            res.send(x);
+        }).catch(e => {
+            next(e);
+        });
+    });
+}
+
+function findResponse(message)
+{
+    return new Promise((resolve, reject) => {
+       if (message === "!")
+       {
+           reject("No exclamations, pls!")
+       }
+       else
+       {
+           resolve(new PingResponse(message));
+       }
     });
 }
 
