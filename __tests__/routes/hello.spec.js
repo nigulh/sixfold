@@ -1,5 +1,5 @@
 const request = require('supertest')
-const app = require('../../dist/server')
+const app = require('../../src/server')
 describe('Hello Endpoints', () => {
     it('should get hello world', async () => {
         const res = await request(app).get('/ping/foo');

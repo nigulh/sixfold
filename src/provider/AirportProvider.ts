@@ -1,6 +1,6 @@
 import {getAllAirports} from '../Database'
 import {Airport} from "../models/Airport";
-import { parse } from 'csv-parse/sync';
+//import { parse } from 'csv-parse/sync';
 //const parse = require('csv-parse/sync').parse;
 
 export class AirportProvider
@@ -10,7 +10,8 @@ export class AirportProvider
 
     findAll() {
         let allAirports = getAllAirports();
-        let ret = parse(allAirports, {columns: false}).map(this.mapToAirport);
+        //let ret = parse(allAirports, {columns: false}).map(this.mapToAirport);
+        let ret = [new Airport("E", "2", "3", "4", 5, 6)];
         return ret;
     }
 
