@@ -30,8 +30,8 @@ const router = require('express').Router();
     });
     router.get('/ping/:message', (req, res, next) => {
         let message = req.params.message;
-        findResponse(message).then((x) => {
-            res.send(x);
+        findResponse(message).then((response) => {
+            res.send(response);
         }).catch(e => {
             next(e);
         });

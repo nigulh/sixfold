@@ -6,4 +6,9 @@ describe('Hello Endpoints', () => {
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual({echo: "foo!"});
     })
+    it('should fail exclamation', async () => {
+        const res = await request(app).get('/ping/!');
+        expect(res.statusCode).toEqual(500);
+        expect(res.body).toEqual({error: "No exclamations, pls!"});
+    })
 })
