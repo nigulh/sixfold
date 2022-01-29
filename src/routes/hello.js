@@ -23,20 +23,17 @@
 const {PingResponse} = require("../models/Echo");
 const router = require('express').Router();
 
-//module.exports = function()
-{
-    router.get('/', (req, res) => {
-        res.send('Hello World!!');
+router.get('/', (req, res) => {
+    res.send('Hello World!!');
+});
+router.get('/ping/:message', (req, res, next) => {
+    let message = req.params.message;
+    findResponse(message).then((response) => {
+        res.send(response);
+    }).catch(e => {
+        next(e);
     });
-    router.get('/ping/:message', (req, res, next) => {
-        let message = req.params.message;
-        findResponse(message).then((response) => {
-            res.send(response);
-        }).catch(e => {
-            next(e);
-        });
-    });
-}
+});
 
 function findResponse(message)
 {
