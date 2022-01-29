@@ -7,12 +7,15 @@
     "build": "npm install",
     "prestart": "rimraf dist && tsc && npm run swagger",
     "start": "node dist/server.js",
-    "nodemon": "nodemon --exec \"npm run start\"",
+    "nodemon": "npm run build && nodemon --exec \"npm run start\"",
     "test": "jest",
     "swagger": "node src/generateSwagger.js"
   },
   "nodemonConfig": {
-    "watch": ["src", "package.json"],
+    "watch": [
+      "src",
+      "package.json"
+    ],
     "ext": "*"
   },
   "keywords": [],
