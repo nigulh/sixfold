@@ -28,11 +28,7 @@ router.get('/', (req, res) => {
 });
 router.get('/ping/:message', (req, res, next) => {
     let message = req.params.message;
-    findResponse(message).then((response) => {
-        res.send(response);
-    }).catch(e => {
-        next(e);
-    });
+    findResponse(message).then(r => res.send(r)).catch(e => next(e));
 });
 
 function findResponse(message)

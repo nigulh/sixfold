@@ -9,7 +9,7 @@ export class AirportProvider
 
     findAll() {
         return new Promise<Array<Airport>>((resolve, reject) => {
-           getAllAirports().then((allAirports) => {
+           getAllAirports().then(allAirports => {
               resolve(this.parseCsv(allAirports).map(this.mapToAirport));
            });
         });
@@ -42,9 +42,7 @@ export class AirportProvider
                 rows.push(row);
             }
         });
-        parser.on('error', function(err){
-            console.error(err.message);
-        });
+        parser.on('error', err => console.error(err.message));
         parser.write(allAirports);
         parser.end();
         return rows;

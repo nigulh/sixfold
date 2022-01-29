@@ -21,9 +21,7 @@ let airportProvider = new AirportProvider();
  *                 $ref: '#/components/schemas/airport'
  */
 router.get('/airports', (req, res) => {
-    airportProvider.findAll().then((x) => {
-        res.send(x);
-    })
+    airportProvider.findAll().then((x) => res.send(x))
 });
 
 /**
@@ -48,9 +46,7 @@ router.get('/airports', (req, res) => {
  */
 router.get('/airports/:iataCode', (req, res, next) => {
     let id = req.params.iataCode;
-    airportProvider.findById(id).then(x => {
-        res.send(x);
-    }).catch(e => { next(e);})
+    airportProvider.findById(id).then(x => res.send(x)).catch(e => next(e))
 });
 
 module.exports = router;
