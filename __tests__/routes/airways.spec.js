@@ -8,6 +8,6 @@ describe('Airways Endpoints', () => {
     it('should get all airports', async () => {
         const res = await request(app).get('/airports');
         expect(res.statusCode).toEqual(200);
-        expect(res.body).toEqual([ new Airport("E", "B", "C", "D", 12.0, 13.0)]);
+        expect(res.body).toEqual(JSON.parse('[{"iataCode":"E","city":"C","country":"D","name":"B","latitude":12,"longitude":13}]'));
     })
 })
