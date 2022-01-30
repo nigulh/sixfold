@@ -5,8 +5,8 @@ export class RouteProvider {
     findAll() {
         return new Promise<Array<Route>>((resolve, reject) => {
             getAllRoutes()
-                .then(allAirports => {
-                    resolve(allAirports.map(this.mapToRoute));
+                .then(data => {
+                    resolve(data.map(this.mapToRoute));
                 });
         });
     }
