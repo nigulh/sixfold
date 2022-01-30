@@ -37,8 +37,6 @@ function parseCsv(csvAsString: string) {
     });
 }
 
-
-
 export function getAllAirports() {
     return new Promise<string>((resolve) => {
         if (mockAirports) {
