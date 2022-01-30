@@ -1,7 +1,8 @@
 import {Graph} from "../../src/shortestPath/Graph";
 import {Dijkstra} from "../../src/shortestPath/Dijkstra";
+import {ShortestPathTask} from "../../src/shortestPath/ShortestPathTask";
 
-let graphSpec = new Graph();
+let graph = new Graph();
 
 let edges = {
     "1": "3",
@@ -17,7 +18,7 @@ let vertices = {
 for(const source in edges)
 {
     [...edges[source]].forEach(target => {
-        graphSpec.addEdge(source, target);
+        graph.addEdge(source, target);
     })
 }
 let eucledian = {
@@ -31,12 +32,22 @@ let eucledian = {
 describe('Dijkstra', () => {
     it('simple dijkstra', () => {
         let dijkstra = new Dijkstra();
-        let x = dijkstra.findShortestPath(graphSpec, "1", "4");
-        expect(x).toEqual(3);
+        let problem = <ShortestPathTask>{
+            graph: graph,
+            source: "1",
+            target: "4",
+        }
+        let x = dijkstra.findShortestPath(problem);
+        expect(x).toEqual([3, ["1", "3", "2", "4"]]);
     });
     it ('no path', () => {
         let dijkstra = new Dijkstra();
-        let x = dijkstra.findShortestPath(graphSpec, "1", "5");
-        expect(x).toEqual(Infinity);
+        let problem = <ShortestPathTask>{
+            graph: graph,
+            source: "1",
+            target: "5",
+        }
+        let x = dijkstra.findShortestPath(problem);
+        expect(x).toEqual([Infinity, []]);
     });
 });
