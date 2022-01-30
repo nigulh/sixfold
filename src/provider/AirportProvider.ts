@@ -2,9 +2,6 @@ import {getAllAirports} from '../Database'
 import {Airport} from "../models/Airport";
 
 export class AirportProvider {
-    constructor() {
-    }
-
     findAll() {
         return new Promise<Array<Airport>>((resolve, reject) => {
             getAllAirports()
