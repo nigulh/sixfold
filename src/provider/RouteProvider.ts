@@ -26,7 +26,7 @@ export class RouteProvider {
 
 
     private mapToRoute(data: string[]): Route {
-        return new Route(data[2], data[4]);
+        return new Route(data[2], data[4], data[8]);
     }
 
 }
