@@ -8,7 +8,9 @@ export class Dijkstra implements ShortestPath{
         let graph = task.graph
         let source = task.source;
         let target = task.target;
-        let queue = new PriorityQueue();
+        let queue = new PriorityQueue({comparator: function([a1, a2, a], [b1, b2, b]) {
+            return (a || 0) - (b || 0);
+        }});
         let visited: { [K in Vertex]?: number } = {}
         let prevNode: { [K in Vertex]?: Vertex } = {}
 
@@ -18,7 +20,7 @@ export class Dijkstra implements ShortestPath{
         {
             let [cur, prev, curDistance] = queue.dequeue();
             if ((visited[cur] ?? Infinity) < curDistance) continue;
-            console.log([cur, curDistance])
+            console.log("expanding from node: " + [cur, curDistance]);
             visited[cur] = curDistance;
             prevNode[cur] = prev;
             if (cur == target) return [curDistance, this.backtrackPath(target, prevNode)];
