@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "npm install",
+    "build": "npm install && npm run download",
+    "download": "test ! -d data && mkdir data; test ! -f data/airports.dat && wget -O data/airports.dat https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat; test ! -f data/routes.dat && wget -O data/routes.dat https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat; echo ok",
     "prestart": "rimraf dist && tsc && npm run swagger",
     "start": "node dist/server.js",
     "nodemon": "npm run build && nodemon --exec \"npm run start\"",
