@@ -1,3 +1,4 @@
+import {parse} from 'csv-parse';
 const fs = require('fs');
 
 function getFileContent(path)
@@ -14,6 +15,30 @@ function getFileContent(path)
     });
 }
 
+function parseCsv(csvAsString: string) {
+    return new Promise<Array<string[]>>((resolve, reject) => {
+        const rows = [];
+        const parser = parse({delimiter: ','});
+        parser.on('readable', () => {
+            let row;
+            while ((row = parser.read()) !== null) {
+                // @ts-ignore
+                rows.push(row);
+            }
+        });
+        parser.on('error', err => {
+            reject(err.message);
+        });
+        parser.on('end', () => {
+            resolve(rows);
+        });
+        parser.write(csvAsString);
+        parser.end();
+    });
+}
+
+
+
 export function getAllAirports() {
     return new Promise<string>((resolve) => {
         if (mockAirports) {
@@ -27,11 +52,11 @@ export function getAllAirports() {
                     '416,"Tartu Airport","Tartu","Estonia","TAY","EETU",58.3074989319,26.690399169900004,219,2,"E","Europe/Tallinn","airport","OurAirports"');
             });
         }
-    });
+    }).then(parseCsv);
 }
 
-export function getAll() {
-    return [];
+export function getAllRoutes() {
+    return getFileContent('data/routes.dat').then(parseCsv);
 }
 
 let mockAirports: string|undefined = undefined;
