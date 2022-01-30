@@ -3,7 +3,14 @@ const fs = require('fs');
 function getFileContent(path)
 {
     return new Promise<string>((resolve, reject) => {
-        fs.readFile(path, resolve, reject);
+        fs.readFile(path, (err, data) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(data);
+            }
+        })
     });
 }
 

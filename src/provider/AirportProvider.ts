@@ -9,8 +9,8 @@ export class AirportProvider
 
     findAll() {
         return new Promise<Array<Airport>>((resolve, reject) => {
-           getAllAirports().then(allAirports => {
-              resolve(this.parseCsv(allAirports).map(this.mapToAirport));
+           getAllAirports().then(airports => this.parseCsv(airports)).then(allAirports => {
+              resolve(allAirports.map(this.mapToAirport));
            });
         });
     }
@@ -33,22 +33,28 @@ export class AirportProvider
     }
 
     private parseCsv(allAirports: string) {
-        const rows = [];
-        const parser = parse({delimiter: ','});
-        parser.on('readable', () => {
-            let row;
-            while ((row = parser.read()) !== null) {
-                // @ts-ignore
-                rows.push(row);
-            }
+        return new Promise<Array<string[]>>((resolve, reject) => {
+            const rows = [];
+            const parser = parse({delimiter: ','});
+            parser.on('readable', () => {
+                let row;
+                while ((row = parser.read()) !== null) {
+                    // @ts-ignore
+                    rows.push(row);
+                }
+            });
+            parser.on('error', err => {
+                reject(err.message);
+            });
+            parser.on('end', () => {
+               resolve(rows);
+            });
+            parser.write(allAirports);
+            parser.end();
         });
-        parser.on('error', err => console.error(err.message));
-        parser.write(allAirports);
-        parser.end();
-        return rows;
     }
 
-    private mapToAirport(data: any[]): Airport {
+    private mapToAirport(data: string[]): Airport {
         return new Airport(data[4], data[1], data[2], data[3], parseFloat(data[6]), parseFloat(data[7]));
     }
 }
