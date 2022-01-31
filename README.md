@@ -16,7 +16,7 @@ git clone https://github.com/nigulh/sixfold.git
 
 ### Start demo
 ```shell
-docker-compose up -d
+docker-compose up
 ```
 If it succeeds, then open [Swagger UI](http://localhost:3080/) in your web browser.
 
