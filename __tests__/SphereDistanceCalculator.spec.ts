@@ -7,12 +7,13 @@ describe('Sphere distance', () => {
         expect(calculator._findDistance(3, 2, 3, 2)).toBeCloseTo(0.0, 7);
     });
     describe("distance to antipode is half perimeter", () => {
-        Object.entries({
+        let cases = {
             "origin": [2, 3],
             "random": [4, 5],
             "pole": [0, 90],
             "equator": [0, 0]
-        }).forEach(([key, [N, E]]) => {
+        };
+        Object.entries(cases).forEach(([key, [N, E]]) => {
             it(key, () => {
                 expect(calculator._findDistance(2, 3, N, E) + calculator._findDistance(N, E, -2, 183)).toBeCloseTo(Math.PI, 7);
             });

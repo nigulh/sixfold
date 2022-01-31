@@ -1,31 +1,26 @@
 import {Graph, Vertex} from "../../src/shortestPath/Graph";
 import {Dijkstra} from "../../src/shortestPath/Dijkstra";
-import {ShortestPathRequest} from "../../src/models/ShortestPathRequest";
 import {Metric} from "../../src/shortestPath/Metric";
 import {FloydWarshallAlgorithm} from "./FloydWarshallAlgorithm";
 
-let graph = new Graph();
 
-let edges = {
+function buildGraph(edges) {
+    let graph = new Graph();
+    for (const source in edges) {
+        [...edges[source]].forEach(target => {
+            graph.addEdge(source, target);
+        })
+    }
+    return graph;
+}
+
+let graph = buildGraph({
     "1": "3",
     "3": "21",
     "2": "43"
-}
-let vertices = {
-    "1": [1, 0],
-    "2": [2, 0],
-    "3": [3, 0],
-    "4": [4, 0]
-}
-for(const source in edges)
-{
-    [...edges[source]].forEach(target => {
-        graph.addEdge(source, target);
-    })
-}
+});
 
 let dijkstra = new Dijkstra(graph);
-
 let bruteForce = new FloydWarshallAlgorithm(graph, <Metric<Vertex>> {
     findDistance(a: Vertex, b: Vertex): number {
         return 1;
@@ -49,4 +44,18 @@ describe('Dijkstra', () => {
         expect(x).toEqual(solution);
         expect(x).toEqual(y);
     });
+    let cases = {
+        'another case': ["1", "4"],
+        'no path': ["1", "5"]
+    };
+    Object.entries(cases).forEach(([key, [source, target]]) => {
+        it(key, () => {
+            let problem = {originIataCode: <string>source, destinationIataCode: <string>target}
+            let x = dijkstra.findShortestPath(problem);
+            let y = bruteForce.findShortestPath(problem);
+            expect(x).toEqual(y);
+        });
+    });
+
 });
+
