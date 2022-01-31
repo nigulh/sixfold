@@ -48,6 +48,8 @@ export class ShortestPathHandler
                     }
                 };
                 let ret = new Dijkstra(graph, metric).findShortestPath(data);
+                let optimalDistance = measure.findDistance(airportMap[data.originIataCode], airportMap[data.destinationIataCode]);
+                ret.deviation = optimalDistance == 0 ? (ret.distance == 0 ? 0 : Infinity) : ret.distance / optimalDistance - 1;
                 resolve(ret);
             }).catch(e => reject(e))
         });

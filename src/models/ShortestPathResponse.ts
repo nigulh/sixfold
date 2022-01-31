@@ -10,7 +10,11 @@ import {Route} from "./Route";
  *         distance:
  *           type: float
  *           example: 10.0
- *         path:
+ *         deviation:
+ *           description: extra distance relative to straight distance
+ *           type: float
+ *           example: 0.1
+ *         steps:
  *           type: array
  *           example: [["TLL", "HEL"]]
  *           items:
@@ -19,5 +23,6 @@ import {Route} from "./Route";
 
 export interface ShortestPathResponse {
     distance: number,
+    deviation?: number,
     steps: Array<[Vertex, Vertex]|Route>,
 }
