@@ -26,24 +26,9 @@ export class ShortestPathHandler
                 airportProvider.findAll().then(airports => myAirports = airports),
                 routeProvider.findAll().then(routes => myRoutes = routes)
             ]).then(() => {
-                let graph = new Graph()
-                let airportMap = {};
-                for (let airport of myAirports)
-                {
-                    airportMap[airport.iataCode] = airport;
-                }
+                let airportMap = this.buildAirportsMap(myAirports);
+                let graph = this.buildGraph(myRoutes, airportMap);
                 let measure = new SphereDistanceCalculator(EARTH_RADIUS_IN_KM);
-                let skipCount = 0;
-                for (let route of myRoutes)
-                {
-                    if (airportMap[route.originIataCode] === undefined || airportMap[route.destinationIataCode] === undefined)
-                    {
-                        skipCount++;
-                        continue;
-                    }
-                    graph.addEdge(route.originIataCode, route.destinationIataCode);
-                }
-                console.log("Skipped", skipCount, "routes");
                 let metric = <Metric<Vertex>> {
                     findDistance(a: Vertex, b: Vertex): number {
                         return measure.findDistance(airportMap[a], airportMap[b]);
@@ -60,5 +45,27 @@ export class ShortestPathHandler
                 resolve(ret);
             }).catch(e => reject(e))
         });
+    }
+
+    private buildAirportsMap(myAirports: Array<Airport>) {
+        let airportMap = {};
+        for (let airport of myAirports) {
+            airportMap[airport.iataCode] = airport;
+        }
+        return airportMap;
+    }
+
+    private buildGraph(myRoutes: Array<Route>, airportMap: {}) {
+        let graph = new Graph()
+        let skipCount = 0;
+        for (let route of myRoutes) {
+            if (airportMap[route.originIataCode] === undefined || airportMap[route.destinationIataCode] === undefined) {
+                skipCount++;
+                continue;
+            }
+            graph.addEdge(route.originIataCode, route.destinationIataCode);
+        }
+        console.log("Skipped", skipCount, "routes");
+        return graph;
     }
 }
