@@ -10,6 +10,7 @@ const PriorityQueue = require('js-priority-queue');
 interface ShortestPathNode
 {
     vertex: Vertex,
+    flightsRemaining: number,
     getHash: () => string,
 }
 
@@ -83,8 +84,9 @@ export class Dijkstra implements ShortestPath {
     findShortestPath(task: ShortestPathRequest): ShortestPathResponse {
         let state = new ShortestPathState();
         let curState: ShortestPathNode | undefined;
+        let numFlights = task.numFlightsUpperBound ?? Infinity;
 
-        state.insert(<ShortestPathNode>{vertex: task.originIataCode, getHash: () => { return task.originIataCode; }}, 0);
+        state.insert(<ShortestPathNode>{vertex: task.originIataCode, flightsRemaining: numFlights, getHash: () => { return task.originIataCode + numFlights; }}, 0);
         while (curState = state.retrieve())
         {
             if (curState.vertex == task.destinationIataCode) {
@@ -93,8 +95,13 @@ export class Dijkstra implements ShortestPath {
                 return ret;
             }
 
+            if (curState.flightsRemaining == 0) {
+                continue;
+            }
+
             for (let next of this.graph.getAdjacentFrom(curState.vertex)) {
-                state.insert(<ShortestPathNode>{vertex: next, getHash: () => { return next; }}, this.metric.findDistance(curState.vertex, next));
+                let flightsRemaining = curState.flightsRemaining - 1;
+                state.insert(<ShortestPathNode>{vertex: next, flightsRemaining: flightsRemaining, getHash: () => { return <string>next + flightsRemaining; }}, this.metric.findDistance(curState.vertex, next));
             }
         }
         return {distance: Infinity, steps: []};
