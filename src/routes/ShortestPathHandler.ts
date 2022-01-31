@@ -50,6 +50,11 @@ export class ShortestPathHandler
                     }
                 };
                 let ret = new Dijkstra(graph, metric).findShortestPath(data);
+                if (ret.distance == Infinity)
+                {
+                    reject("Could not find route");
+                    return;
+                }
                 let optimalDistance = measure.findDistance(airportMap[data.originIataCode], airportMap[data.destinationIataCode]);
                 ret.deviation = optimalDistance == 0 ? (ret.distance == 0 ? 0 : Infinity) : ret.distance / optimalDistance - 1;
                 resolve(ret);
