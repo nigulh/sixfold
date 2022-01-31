@@ -47,17 +47,17 @@ export class FloydWarshallAlgorithm implements ShortestPath {
         {
             return {distance: Infinity, path: []}
         }
-        return {distance: distance, path: this.backtrackPath(task.originIataCode, task.destinationIataCode).concat(task.destinationIataCode)};
+        return {distance: distance, path: this.backtrackPath(task.originIataCode, task.destinationIataCode)};
     }
 
     private backtrackPath(from: Vertex, to: Vertex) {
-        if (to == undefined) {
-            return [from];
-        }
-        if (from == undefined || from == to) {
+        if (from == to) {
             return [];
         }
         let prev = this.prevs[from][to];
+        if (prev == undefined) {
+            return [[from, to]];
+        }
         return this.backtrackPath(from, prev).concat(this.backtrackPath(prev, to));
     }
 }

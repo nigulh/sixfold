@@ -18,5 +18,5 @@ import {Vertex} from "../shortestPath/Graph";
 
 export interface ShortestPathResponse {
     distance: number,
-    path: Array<Vertex>,
+    path: Array<[Vertex, Vertex]>,
 }

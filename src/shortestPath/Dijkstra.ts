@@ -56,12 +56,14 @@ class ShortestPathState
     }
 
     backtrackPath() {
-        let ret: Array<Vertex> = [];
+        let ret: Array<[Vertex, Vertex]> = [];
         let curNode = this.curNode;
         while (curNode !== undefined)
         {
-            ret.push(curNode.vertex);
-            curNode = this.nodeMap[this.prevNode[curNode.getHash()] ?? ""];
+            let prevNode = this.nodeMap[this.prevNode[curNode.getHash()] ?? ""];
+            if (prevNode == undefined) break;
+            ret.push([prevNode.vertex, curNode.vertex]);
+            curNode = prevNode;
         }
         return ret.reverse();
     }
