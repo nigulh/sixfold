@@ -15,8 +15,8 @@ interface ShortestPathNode
 class ShortestPathState
 {
     queue: typeof PriorityQueue;
-    visited: { [K in string]?: number } = {};
-    prevNode: { [K in Vertex]?: string } = {};
+    bestDistance: { [K in string]?: number } = {};
+    prevNode: { [K in string]?: string } = {};
     insertedCounter = 0;
     processedCounter = 0;
     curNode?: ShortestPathNode = undefined;
@@ -38,19 +38,21 @@ class ShortestPathState
     retrieve(): ShortestPathNode | undefined {
         while (this.queue.length > 0) {
             let [curId, prevId, curDistance] = this.queue.dequeue();
-            if (this.findMinimumDistanceSoFar(curId) <= curDistance) continue;
+            let curNode = this.nodeMap[curId];
+            if (curNode == undefined) throw new Error("Expected node to be in map");
+            if (this.findMinimumDistanceSoFar(curNode) <= curDistance) continue;
+            this.curNode = curNode;
             this.processedCounter += 1;
-            this.visited[curId] = curDistance;
+            this.bestDistance[curId] = curDistance;
             this.prevNode[curId] = prevId;
-            this.curNode = this.nodeMap[curId];
             this.curDistance = curDistance;
             return this.curNode;
         }
         return undefined;
     }
 
-    private findMinimumDistanceSoFar(cur) {
-        return this.visited[cur] ?? Infinity;
+    private findMinimumDistanceSoFar(curNode: ShortestPathNode) {
+        return this.bestDistance[curNode.getHash()] ?? Infinity;
     }
 
     backtrackPath() {
