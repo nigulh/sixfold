@@ -45,9 +45,9 @@ export class FloydWarshallAlgorithm implements ShortestPath {
         let distance = this.distances[task.originIataCode][task.destinationIataCode];
         if (distance == Infinity || distance == undefined)
         {
-            return {distance: Infinity, path: []}
+            return {distance: Infinity, steps: []}
         }
-        return {distance: distance, path: this.backtrackPath(task.originIataCode, task.destinationIataCode)};
+        return {distance: distance, steps: this.backtrackPath(task.originIataCode, task.destinationIataCode)};
     }
 
     private backtrackPath(from: Vertex, to: Vertex) {

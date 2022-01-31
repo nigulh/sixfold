@@ -1,4 +1,5 @@
 import {Vertex} from "../shortestPath/Graph";
+import {Route} from "./Route";
 
 /**
  * @swagger
@@ -11,12 +12,12 @@ import {Vertex} from "../shortestPath/Graph";
  *           example: 10.0
  *         path:
  *           type: array
- *           example: ["TLL", "HEL"]
+ *           example: [["TLL", "HEL"]]
  *           items:
- *             type: string
+ *             $ref: '#/components/schemas/route'
  */
 
 export interface ShortestPathResponse {
     distance: number,
-    path: Array<[Vertex, Vertex]>,
+    steps: Array<[Vertex, Vertex]|Route>,
 }

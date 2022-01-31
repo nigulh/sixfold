@@ -3,6 +3,7 @@ import {ShortestPath} from "./ShortestPathTask";
 import {ShortestPathRequest} from "../models/ShortestPathRequest";
 import {ShortestPathResponse} from "../models/ShortestPathResponse";
 import {Metric} from "./Metric";
+import {Route} from "../models/Route";
 
 const PriorityQueue = require('js-priority-queue');
 
@@ -56,7 +57,7 @@ class ShortestPathState
     }
 
     backtrackPath() {
-        let ret: Array<[Vertex, Vertex]> = [];
+        let ret: Array<[Vertex, Vertex]|Route> = [];
         let curNode = this.curNode;
         while (curNode !== undefined)
         {
@@ -87,7 +88,7 @@ export class Dijkstra implements ShortestPath {
         while (curState = state.retrieve())
         {
             if (curState.vertex == task.destinationIataCode) {
-                let ret = {distance: state.curDistance, path: state.backtrackPath()};
+                let ret = <ShortestPathResponse>{distance: state.curDistance, steps: state.backtrackPath()};
                 console.log({inserted: state.insertedCounter, processed: state.processedCounter}, ret);
                 return ret;
             }
@@ -96,7 +97,7 @@ export class Dijkstra implements ShortestPath {
                 state.insert(<ShortestPathNode>{vertex: next, getHash: () => { return next; }}, this.metric.findDistance(curState.vertex, next));
             }
         }
-        return {distance: Infinity, path: []};
+        return {distance: Infinity, steps: []};
     }
 
 }

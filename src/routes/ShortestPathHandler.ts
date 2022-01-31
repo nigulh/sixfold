@@ -47,7 +47,7 @@ export class ShortestPathHandler
                         return measure.findDistance(airportMap[a], airportMap[b]);
                     }
                 };
-                let ret = new Dijkstra(graph, metric).findShortestPath(data)
+                let ret = new Dijkstra(graph, metric).findShortestPath(data);
                 resolve(ret);
             }).catch(e => reject(e))
         });
