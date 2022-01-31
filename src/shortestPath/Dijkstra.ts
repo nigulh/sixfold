@@ -35,10 +35,10 @@ export class Dijkstra implements ShortestPath {
         let numFlights = task.numFlightsUpperBound ?? Infinity;
 
         state.insert(new AirportNode(task.originIataCode, numFlights), this.metric.findDistance(task.originIataCode, task.destinationIataCode));
-        while (curState = <AirportNode | undefined>state.retrieve())
+        while (curState = state.retrieve())
         {
             if (curState.vertex == task.destinationIataCode) {
-                let ret = <ShortestPathResponse>{distance: state.curDistance, steps: state.backtrackPath().map(([x, y]) => [(<AirportNode>x).vertex, (<AirportNode>y).vertex])};
+                let ret = <ShortestPathResponse>{distance: state.curDistance, steps: state.backtrackPath().map(([x, y]) => [x.vertex, y.vertex])};
                 console.log({inserted: state.insertedCounter, processed: state.processedCounter}, ret);
                 return ret;
             }
