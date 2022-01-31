@@ -53,7 +53,7 @@ export class FloydWarshallAlgorithm implements ShortestPath {
         if (to == undefined) {
             return [from];
         }
-        if (from == undefined) {
+        if (from == undefined || from == to) {
             return [];
         }
         let prev = this.prevs[from][to];

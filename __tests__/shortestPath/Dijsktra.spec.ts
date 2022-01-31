@@ -14,48 +14,57 @@ function buildGraph(edges) {
     return graph;
 }
 
-let graph = buildGraph({
-    "1": "3",
-    "3": "21",
-    "2": "43"
-});
-
-let dijkstra = new Dijkstra(graph);
-let bruteForce = new FloydWarshallAlgorithm(graph, <Metric<Vertex>> {
-    findDistance(a: Vertex, b: Vertex): number {
-        return 1;
-    }
-})
-
 describe('Dijkstra', () => {
-    it('simple dijkstra', () => {
-        let problem = {originIataCode: "1", destinationIataCode: "4",}
-        let solution = {distance: 3, path: ["1", "3", "2", "4"]};
-        let x = dijkstra.findShortestPath(problem);
-        let y = bruteForce.findShortestPath(problem);
-        expect(x).toEqual(solution);
-        expect(x).toEqual(y);
-    });
-    it ('no path', () => {
-        let problem = {originIataCode: "1", destinationIataCode: "5",}
-        let solution = {distance: Infinity, path: []};
-        let x = dijkstra.findShortestPath(problem);
-        let y = bruteForce.findShortestPath(problem);
-        expect(x).toEqual(solution);
-        expect(x).toEqual(y);
-    });
+
     let cases = {
-        'another case': ["1", "4"],
-        'no path': ["1", "5"]
+        'sample case': [{"1": "3", "3": "21", "2": "43"}, "1", "4", 3],
+        'no path': [{"1": "2"}, "1", "5", Infinity],
+        'flight to self': [{"1": "1"}, "1", "1", 0],
     };
-    Object.entries(cases).forEach(([key, [source, target]]) => {
+    Object.entries(cases).forEach(([key, [edges, source, target, result]]) => {
         it(key, () => {
+            let graph = buildGraph(edges);
             let problem = {originIataCode: <string>source, destinationIataCode: <string>target}
+            let dijkstra = new Dijkstra(<Graph>graph);
+            let bruteForce = new FloydWarshallAlgorithm(<Graph>graph, <Metric<Vertex>> {
+                findDistance(a: Vertex, b: Vertex): number {
+                    return a == b ? 0 : 1;
+                }
+            });
+
             let x = dijkstra.findShortestPath(problem);
             let y = bruteForce.findShortestPath(problem);
             expect(x).toEqual(y);
+            expect(x.distance).toEqual(result);
         });
     });
-
 });
+
+describe("Dijkstra vs Flowyd", () => {
+    let graph = buildGraph({
+        "1": "234",
+        "2": "256",
+        "3": "15",
+        "4": "5",
+        "5": "62",
+        "6": "1",
+    });
+    let dijkstra = new Dijkstra(graph);
+    let bruteForce = new FloydWarshallAlgorithm(graph, <Metric<Vertex>> {
+        findDistance(a: Vertex, b: Vertex): number {
+            return 1;
+        }
+    })
+    it("same values for all", () => {
+       for(let source of graph.getVertices())
+       {
+           for (let target of graph.getVertices())
+           {
+               let problem = {originIataCode: source, destinationIataCode: target};
+
+               expect(dijkstra.findShortestPath(problem)).toEqual(bruteForce.findShortestPath(problem));
+           }
+       }
+    });
+})
 
