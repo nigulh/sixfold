@@ -1,6 +1,7 @@
 import {Graph, Vertex} from "./Graph";
 import {ShortestPath} from "./ShortestPathTask";
 import {ShortestPathRequest} from "../models/ShortestPathRequest";
+import {ShortestPathResponse} from "../models/ShortestPathResponse";
 
 const PriorityQueue = require('js-priority-queue');
 
@@ -11,7 +12,7 @@ export class Dijkstra implements ShortestPath{
         this.graph = graph;
     }
 
-    findShortestPath(task: ShortestPathRequest): [distance: number, path: Array<Vertex>] {
+    findShortestPath(task: ShortestPathRequest): ShortestPathResponse {
         let queue = new PriorityQueue({comparator: function([a1, a2, a], [b1, b2, b]) {
             return (a || 0) - (b || 0);
         }});
@@ -30,7 +31,7 @@ export class Dijkstra implements ShortestPath{
             prevNode[cur] = prev;
             if (cur == task.destinationIataCode) {
                 console.log({inserted: insertedCounter, processed: processedCounter});
-                return [curDistance, this.backtrackPath(cur, prevNode)];
+                return {distance: curDistance, path: this.backtrackPath(cur, prevNode)};
             }
 
             for (let next of this.graph.getAdjacentFrom(cur))
@@ -39,7 +40,7 @@ export class Dijkstra implements ShortestPath{
                 insertedCounter += 1;
             }
         }
-        return [Infinity, []];
+        return {distance: Infinity, path: []};
     }
 
     private backtrackPath(target: Vertex, prevNode: { [K in Vertex]?: Vertex }) {

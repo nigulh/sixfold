@@ -34,23 +34,19 @@ let bruteForce = new FloydWarshallAlgorithm(graph, <Metric<Vertex>> {
 
 describe('Dijkstra', () => {
     it('simple dijkstra', () => {
-        let problem = <ShortestPathRequest>{
-            originIataCode: "1",
-            destinationIataCode: "4",
-        }
+        let problem = {originIataCode: "1", destinationIataCode: "4",}
+        let solution = {distance: 3, path: ["1", "3", "2", "4"]};
         let x = dijkstra.findShortestPath(problem);
         let y = bruteForce.findShortestPath(problem);
-        expect(x).toEqual([3, ["1", "3", "2", "4"]]);
+        expect(x).toEqual(solution);
         expect(x).toEqual(y);
     });
     it ('no path', () => {
-        let problem = <ShortestPathRequest>{
-            originIataCode: "1",
-            destinationIataCode: "5",
-        }
+        let problem = {originIataCode: "1", destinationIataCode: "5",}
+        let solution = {distance: Infinity, path: []};
         let x = dijkstra.findShortestPath(problem);
         let y = bruteForce.findShortestPath(problem);
-        expect(x).toEqual([Infinity, []]);
+        expect(x).toEqual(solution);
         expect(x).toEqual(y);
     });
 });

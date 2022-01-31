@@ -1,7 +1,6 @@
-import {Graph, Vertex} from "./Graph";
-import {Metric} from "./Metric";
 import {ShortestPathRequest} from "../models/ShortestPathRequest";
+import {ShortestPathResponse} from "../models/ShortestPathResponse";
 
 export interface ShortestPath {
-    findShortestPath(task: ShortestPathRequest): [distance: number, path: Array<Vertex>]
+    findShortestPath(task: ShortestPathRequest): ShortestPathResponse
 }
