@@ -16,7 +16,7 @@ function buildGraph(edges) {
 
 let edgeCountMetric = <Metric<Vertex>> {
     findDistance(a: Vertex, b: Vertex): number {
-        return 1;
+        return a == b ? 0 : 1;
     }
 };
 

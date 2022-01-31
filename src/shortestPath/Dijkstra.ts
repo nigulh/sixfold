@@ -94,7 +94,7 @@ export class Dijkstra implements ShortestPath {
         let curState: ShortestPathNode | undefined;
         let numFlights = task.numFlightsUpperBound ?? Infinity;
 
-        state.insert(new ShortestPathNode(task.originIataCode, numFlights), 0);
+        state.insert(new ShortestPathNode(task.originIataCode, numFlights), this.metric.findDistance(task.originIataCode, task.destinationIataCode));
         while (curState = state.retrieve())
         {
             if (curState.vertex == task.destinationIataCode) {
@@ -108,7 +108,8 @@ export class Dijkstra implements ShortestPath {
             }
 
             for (let next of this.graph.getAdjacentFrom(curState.vertex)) {
-                state.insert(new ShortestPathNode(next, curState.flightsRemaining - 1), this.metric.findDistance(curState.vertex, next));
+                let extraDistance = this.metric.findDistance(curState.vertex, next) + this.metric.findDistance(next, task.destinationIataCode) - this.metric.findDistance(curState.vertex, task.destinationIataCode);
+                state.insert(new ShortestPathNode(next, curState.flightsRemaining - 1), extraDistance);
             }
         }
         return {distance: Infinity, steps: []};
