@@ -7,11 +7,19 @@ import {Route} from "../models/Route";
 
 const PriorityQueue = require('js-priority-queue');
 
-interface ShortestPathNode
+class ShortestPathNode
 {
-    vertex: Vertex,
-    flightsRemaining: number,
-    getHash: () => string,
+    vertex: Vertex;
+    flightsRemaining: number;
+
+    constructor(vertex: Vertex, flightsRemaining: number) {
+        this.vertex = vertex;
+        this.flightsRemaining = flightsRemaining;
+    }
+
+    getHash() {
+        return <string>this.vertex + this.flightsRemaining;
+    }
 }
 
 class ShortestPathState
@@ -86,7 +94,7 @@ export class Dijkstra implements ShortestPath {
         let curState: ShortestPathNode | undefined;
         let numFlights = task.numFlightsUpperBound ?? Infinity;
 
-        state.insert(<ShortestPathNode>{vertex: task.originIataCode, flightsRemaining: numFlights, getHash: () => { return task.originIataCode + numFlights; }}, 0);
+        state.insert(new ShortestPathNode(task.originIataCode, numFlights), 0);
         while (curState = state.retrieve())
         {
             if (curState.vertex == task.destinationIataCode) {
@@ -100,8 +108,7 @@ export class Dijkstra implements ShortestPath {
             }
 
             for (let next of this.graph.getAdjacentFrom(curState.vertex)) {
-                let flightsRemaining = curState.flightsRemaining - 1;
-                state.insert(<ShortestPathNode>{vertex: next, flightsRemaining: flightsRemaining, getHash: () => { return <string>next + flightsRemaining; }}, this.metric.findDistance(curState.vertex, next));
+                state.insert(new ShortestPathNode(next, curState.flightsRemaining - 1), this.metric.findDistance(curState.vertex, next));
             }
         }
         return {distance: Infinity, steps: []};
