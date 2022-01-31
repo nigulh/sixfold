@@ -1,6 +1,8 @@
-import {Graph} from "../../src/shortestPath/Graph";
+import {Graph, Vertex} from "../../src/shortestPath/Graph";
 import {Dijkstra} from "../../src/shortestPath/Dijkstra";
 import {ShortestPathRequest} from "../../src/models/ShortestPathRequest";
+import {Metric} from "../../src/shortestPath/Metric";
+import {FloydWarshallAlgorithm} from "./FloydWarshallAlgorithm";
 
 let graph = new Graph();
 
@@ -21,31 +23,34 @@ for(const source in edges)
         graph.addEdge(source, target);
     })
 }
-let eucledian = {
-    findDistance(a: string, b: string)
-    {
-        let s = vertices[a], t = vertices[b]
-        let dx = s[0] - t[0], dy = s[1] - t[1]
-        return Math.sqrt(dx**2 + dy**2)
+
+let dijkstra = new Dijkstra(graph);
+
+let bruteForce = new FloydWarshallAlgorithm(graph, <Metric<Vertex>> {
+    findDistance(a: Vertex, b: Vertex): number {
+        return 1;
     }
-}
+})
+
 describe('Dijkstra', () => {
     it('simple dijkstra', () => {
-        let dijkstra = new Dijkstra(graph);
         let problem = <ShortestPathRequest>{
             originIataCode: "1",
             destinationIataCode: "4",
         }
         let x = dijkstra.findShortestPath(problem);
+        let y = bruteForce.findShortestPath(problem);
         expect(x).toEqual([3, ["1", "3", "2", "4"]]);
+        expect(x[0]).toEqual(y[0]);
     });
     it ('no path', () => {
-        let dijkstra = new Dijkstra(graph);
         let problem = <ShortestPathRequest>{
             originIataCode: "1",
             destinationIataCode: "5",
         }
         let x = dijkstra.findShortestPath(problem);
+        let y = bruteForce.findShortestPath(problem);
         expect(x).toEqual([Infinity, []]);
+        expect(x[0]).toEqual(y[0]);
     });
 });
