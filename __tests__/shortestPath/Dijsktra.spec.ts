@@ -41,7 +41,7 @@ describe('Dijkstra', () => {
         let x = dijkstra.findShortestPath(problem);
         let y = bruteForce.findShortestPath(problem);
         expect(x).toEqual([3, ["1", "3", "2", "4"]]);
-        expect(x[0]).toEqual(y[0]);
+        expect(x).toEqual(y);
     });
     it ('no path', () => {
         let problem = <ShortestPathRequest>{
@@ -51,6 +51,6 @@ describe('Dijkstra', () => {
         let x = dijkstra.findShortestPath(problem);
         let y = bruteForce.findShortestPath(problem);
         expect(x).toEqual([Infinity, []]);
-        expect(x[0]).toEqual(y[0]);
+        expect(x).toEqual(y);
     });
 });
