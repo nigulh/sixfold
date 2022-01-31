@@ -1,6 +1,6 @@
 import {Graph} from "../../src/shortestPath/Graph";
 import {Dijkstra} from "../../src/shortestPath/Dijkstra";
-import {ShortestPathTask} from "../../src/shortestPath/ShortestPathTask";
+import {ShortestPathRequest} from "../../src/models/ShortestPathRequest";
 
 let graph = new Graph();
 
@@ -31,21 +31,19 @@ let eucledian = {
 }
 describe('Dijkstra', () => {
     it('simple dijkstra', () => {
-        let dijkstra = new Dijkstra();
-        let problem = <ShortestPathTask>{
-            graph: graph,
-            source: "1",
-            target: "4",
+        let dijkstra = new Dijkstra(graph);
+        let problem = <ShortestPathRequest>{
+            originIataCode: "1",
+            destinationIataCode: "4",
         }
         let x = dijkstra.findShortestPath(problem);
         expect(x).toEqual([3, ["1", "3", "2", "4"]]);
     });
     it ('no path', () => {
-        let dijkstra = new Dijkstra();
-        let problem = <ShortestPathTask>{
-            graph: graph,
-            source: "1",
-            target: "5",
+        let dijkstra = new Dijkstra(graph);
+        let problem = <ShortestPathRequest>{
+            originIataCode: "1",
+            destinationIataCode: "5",
         }
         let x = dijkstra.findShortestPath(problem);
         expect(x).toEqual([Infinity, []]);

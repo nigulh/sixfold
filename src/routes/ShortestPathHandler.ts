@@ -3,7 +3,6 @@ import {Graph} from "../shortestPath/Graph";
 import {Airport} from "../models/Airport";
 import {Route} from "../models/Route";
 import {Dijkstra} from "../shortestPath/Dijkstra";
-import {ShortestPathTask} from "../shortestPath/ShortestPathTask";
 
 const {AirportProvider} = require("../provider/AirportProvider");
 const {RouteProvider} = require("../provider/RouteProvider");
@@ -28,12 +27,7 @@ export class ShortestPathHandler
                 {
                     g.addEdge(route.originIataCode, route.destinationIataCode);
                 }
-                let task = <ShortestPathTask> {
-                    source: data.originIataCode,
-                    target: data.destinationIataCode,
-                    graph: g,
-                };
-                let ret = new Dijkstra().findShortestPath(task)
+                let ret = new Dijkstra(g).findShortestPath(data)
                 resolve(ret);
             }).catch(e => reject(e))
         });
