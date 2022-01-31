@@ -14,6 +14,13 @@ function buildGraph(edges) {
     return graph;
 }
 
+let edgeCountMetric = <Metric<Vertex>> {
+    findDistance(a: Vertex, b: Vertex): number {
+        return 1;
+    }
+};
+
+
 describe('Dijkstra', () => {
 
     let cases = {
@@ -26,12 +33,8 @@ describe('Dijkstra', () => {
         it(key, () => {
             let graph = buildGraph(edges);
             let problem = {originIataCode: <string>source, destinationIataCode: <string>target}
-            let dijkstra = new Dijkstra(<Graph>graph);
-            let bruteForce = new FloydWarshallAlgorithm(<Graph>graph, <Metric<Vertex>> {
-                findDistance(a: Vertex, b: Vertex): number {
-                    return a == b ? 0 : 1;
-                }
-            });
+            let dijkstra = new Dijkstra(<Graph>graph, edgeCountMetric);
+            let bruteForce = new FloydWarshallAlgorithm(<Graph>graph, edgeCountMetric);
 
             let x = dijkstra.findShortestPath(problem);
             let y = bruteForce.findShortestPath(problem);
@@ -50,12 +53,8 @@ describe("Dijkstra vs Flowyd", () => {
         "5": "62",
         "6": "1",
     });
-    let dijkstra = new Dijkstra(graph);
-    let bruteForce = new FloydWarshallAlgorithm(graph, <Metric<Vertex>> {
-        findDistance(a: Vertex, b: Vertex): number {
-            return 1;
-        }
-    })
+    let dijkstra = new Dijkstra(graph, edgeCountMetric);
+    let bruteForce = new FloydWarshallAlgorithm(graph, edgeCountMetric)
     it("same values for all", () => {
        for(let source of graph.getVertices()) {
            for (let target of graph.getVertices()) {

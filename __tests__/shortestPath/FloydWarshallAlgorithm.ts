@@ -8,7 +8,7 @@ export class FloydWarshallAlgorithm implements ShortestPath {
     distances = {}
     prevs = {}
 
-    constructor(adjancies: Graph, metrics: Metric<Vertex>) {
+    constructor(adjancies: Graph, metric: Metric<Vertex>) {
         let distances = {};
         let prevs = {};
         for (let source of adjancies.getVertices()) {
@@ -19,7 +19,7 @@ export class FloydWarshallAlgorithm implements ShortestPath {
                 fromSourcePrevs[target] = undefined;
             }
             for (let target of adjancies.getAdjacentFrom(source)) {
-                fromSourceDistance[target] = metrics.findDistance(source, target);
+                fromSourceDistance[target] = metric.findDistance(source, target);
             }
             fromSourceDistance[source] = 0;
             distances[source] = fromSourceDistance;

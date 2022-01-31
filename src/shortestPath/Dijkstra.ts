@@ -2,14 +2,17 @@ import {Graph, Vertex} from "./Graph";
 import {ShortestPath} from "./ShortestPathTask";
 import {ShortestPathRequest} from "../models/ShortestPathRequest";
 import {ShortestPathResponse} from "../models/ShortestPathResponse";
+import {Metric} from "./Metric";
 
 const PriorityQueue = require('js-priority-queue');
 
 export class Dijkstra implements ShortestPath{
-    graph: Graph
+    private graph: Graph
+    private metric: Metric<Vertex>;
 
-    constructor(graph: Graph) {
+    constructor(graph: Graph, metric: Metric<Vertex>) {
         this.graph = graph;
+        this.metric = metric;
     }
 
     findShortestPath(task: ShortestPathRequest): ShortestPathResponse {
@@ -36,7 +39,7 @@ export class Dijkstra implements ShortestPath{
 
             for (let next of this.graph.getAdjacentFrom(cur))
             {
-                queue.queue([next, cur, curDistance + 1]);
+                queue.queue([next, cur, curDistance + this.metric.findDistance(cur, next)]);
                 insertedCounter += 1;
             }
         }
