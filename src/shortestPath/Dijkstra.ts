@@ -6,6 +6,58 @@ import {Metric} from "./Metric";
 
 const PriorityQueue = require('js-priority-queue');
 
+class ShortestPathState
+{
+    queue: typeof PriorityQueue;
+    visited: { [K in Vertex]?: number } = {};
+    prevNode: { [K in Vertex]?: Vertex } = {};
+    insertedCounter = 0;
+    processedCounter = 0;
+    curVertex = undefined;
+
+    constructor() {
+        this.queue = new PriorityQueue({comparator: function([a1, a2, a], [b1, b2, b]) {
+                return (a || 0) - (b || 0);
+            }});
+    }
+
+    insert(newState: Vertex, distance: number) {
+        this.queue.queue([newState, this.curVertex, distance]);
+        this.insertedCounter += 1;
+    }
+
+    retrieve() {
+        while (this.queue.length > 0) {
+            let [cur, prev, curDistance] = this.queue.dequeue();
+            if ((this.visited[cur] ?? Infinity) <= curDistance) continue;
+            console.log("expanding from node: " + [cur, curDistance]);
+            this.processedCounter += 1;
+            this.visited[cur] = curDistance;
+            this.prevNode[cur] = prev;
+            this.curVertex = cur;
+            return [cur, curDistance];
+        }
+        return undefined;
+    }
+
+    backtrackPath(target: Vertex) {
+        let ret: Array<Vertex> = [];
+        while (true)
+        {
+            ret.push(target);
+            let newTarget = this.prevNode[target];
+            if (newTarget === undefined) {
+                break;
+            }
+            else {
+                target = newTarget;
+            }
+        }
+        return ret.reverse();
+    }
+
+}
+
 export class Dijkstra implements ShortestPath{
     private graph: Graph
     private metric: Metric<Vertex>;
@@ -16,49 +68,24 @@ export class Dijkstra implements ShortestPath{
     }
 
     findShortestPath(task: ShortestPathRequest): ShortestPathResponse {
-        let queue = new PriorityQueue({comparator: function([a1, a2, a], [b1, b2, b]) {
-            return (a || 0) - (b || 0);
-        }});
-        let visited: { [K in Vertex]?: number } = {}
-        let prevNode: { [K in Vertex]?: Vertex } = {}
+        let state = new ShortestPathState();
+        let curState;
 
-        queue.queue([task.originIataCode, undefined, 0]);
-        let insertedCounter = 0, processedCounter = 0;
-        while(queue.length > 0)
+        state.insert(task.originIataCode, 0);
+        while(curState = state.retrieve())
         {
-            let [cur, prev, curDistance] = queue.dequeue();
-            if ((visited[cur] ?? Infinity) <= curDistance) continue;
-            console.log("expanding from node: " + [cur, curDistance]);
-            processedCounter += 1;
-            visited[cur] = curDistance;
-            prevNode[cur] = prev;
+            let [cur, curDistance] = curState;
+
             if (cur == task.destinationIataCode) {
-                console.log({inserted: insertedCounter, processed: processedCounter});
-                return {distance: curDistance, path: this.backtrackPath(cur, prevNode)};
+                console.log({inserted: state.insertedCounter, processed: state.processedCounter});
+                return {distance: curDistance, path: state.backtrackPath(cur)};
             }
 
-            for (let next of this.graph.getAdjacentFrom(cur))
-            {
-                queue.queue([next, cur, curDistance + this.metric.findDistance(cur, next)]);
-                insertedCounter += 1;
+            for (let next of this.graph.getAdjacentFrom(cur)) {
+                state.insert(next, curDistance + this.metric.findDistance(cur, next));
             }
         }
         return {distance: Infinity, path: []};
     }
 
-    private backtrackPath(target: Vertex, prevNode: { [K in Vertex]?: Vertex }) {
-        let ret: Array<Vertex> = [];
-        while (true)
-        {
-            ret.push(target);
-            let newTarget = prevNode[target];
-            if (newTarget === undefined) {
-                break;
-            }
-            else {
-                target = newTarget;
-            }
-        }
-        return ret.reverse();
-    }
 }
