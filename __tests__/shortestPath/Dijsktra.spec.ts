@@ -17,6 +17,7 @@ function buildGraph(edges) {
 describe('Dijkstra', () => {
 
     let cases = {
+        'be in self': [{"1": "2"}, "1", "1", 0],
         'sample case': [{"1": "3", "3": "21", "2": "43"}, "1", "4", 3],
         'no path': [{"1": "2"}, "1", "5", Infinity],
         'flight to self': [{"1": "1"}, "1", "1", 0],
@@ -56,13 +57,13 @@ describe("Dijkstra vs Flowyd", () => {
         }
     })
     it("same values for all", () => {
-       for(let source of graph.getVertices())
-       {
-           for (let target of graph.getVertices())
-           {
+       for(let source of graph.getVertices()) {
+           for (let target of graph.getVertices()) {
                let problem = {originIataCode: source, destinationIataCode: target};
 
-               expect(dijkstra.findShortestPath(problem)).toEqual(bruteForce.findShortestPath(problem));
+               let actual = dijkstra.findShortestPath(problem);
+               let expected = bruteForce.findShortestPath(problem);
+               expect(actual.distance).toEqual(expected.distance);
            }
        }
     });

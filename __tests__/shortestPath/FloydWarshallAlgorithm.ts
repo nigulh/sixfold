@@ -21,6 +21,7 @@ export class FloydWarshallAlgorithm implements ShortestPath {
             for (let target of adjancies.getAdjacentFrom(source)) {
                 fromSourceDistance[target] = metrics.findDistance(source, target);
             }
+            fromSourceDistance[source] = 0;
             distances[source] = fromSourceDistance;
             prevs[source] = fromSourcePrevs;
         }
