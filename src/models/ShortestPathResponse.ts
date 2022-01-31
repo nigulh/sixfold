@@ -8,13 +8,16 @@ import {Route} from "./Route";
  *     shortestPathResponse:
  *       properties:
  *         distance:
+ *           summary: distance in kilometers
  *           type: float
  *           example: 10.0
  *         deviation:
- *           description: extra distance relative to straight distance
+ *           summary: extra distance relative to geodesic straight distance.
+ *           description: 0 - optimal distance, 0.1 - 10% extra
  *           type: float
  *           example: 0.1
  *         steps:
+ *           summary: Not complete yet
  *           type: array
  *           example: [["TLL", "HEL"]]
  *           items:

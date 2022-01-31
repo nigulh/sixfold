@@ -2,6 +2,12 @@ import {Airport} from "./models/Airport";
 import {Metric} from "./shortestPath/Metric";
 
 export class SphereDistanceCalculator implements Metric<Airport> {
+    radius: number = 1;
+
+    constructor(radius: number = 1) {
+        this.radius = radius;
+    }
+
     _findDistance(n1: number, e1: number, n2: number, e2: number) {
         let N1 = n1 * Math.PI / 180;
         let E1 = e1 * Math.PI / 180;
@@ -12,6 +18,6 @@ export class SphereDistanceCalculator implements Metric<Airport> {
     }
 
     findDistance(a: Airport, b: Airport) {
-        return this._findDistance(a.latitude, a.longitude, b.latitude, b.longitude);
+        return this._findDistance(a.latitude, a.longitude, b.latitude, b.longitude) * this.radius;
     }
 }

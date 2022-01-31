@@ -11,6 +11,7 @@
  *           type: string
  *           example: HEL
  *         numFlightsUpperBound:
+ *           summary: if empty, then no upper bound
  *           type: integer
  *           example: 3
  *           nullable: true

@@ -12,6 +12,8 @@ const {RouteProvider} = require("../provider/RouteProvider");
 let airportProvider = new AirportProvider();
 let routeProvider = new RouteProvider();
 
+const EARTH_RADIUS_IN_KM = 6371;
+
 export class ShortestPathHandler
 {
     handle(body)
@@ -30,7 +32,7 @@ export class ShortestPathHandler
                 {
                     airportMap[airport.iataCode] = airport;
                 }
-                let measure = new SphereDistanceCalculator();
+                let measure = new SphereDistanceCalculator(EARTH_RADIUS_IN_KM);
                 let skipCount = 0;
                 for (let route of myRoutes)
                 {
