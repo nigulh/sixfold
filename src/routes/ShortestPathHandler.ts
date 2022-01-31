@@ -4,6 +4,7 @@ import {Airport} from "../models/Airport";
 import {Route} from "../models/Route";
 import {Dijkstra} from "../shortestPath/Dijkstra";
 import {Metric} from "../shortestPath/Metric";
+import {SphereDistanceCalculator} from "../SphereDistanceCalculator";
 
 const {AirportProvider} = require("../provider/AirportProvider");
 const {RouteProvider} = require("../provider/RouteProvider");
@@ -24,13 +25,26 @@ export class ShortestPathHandler
                 routeProvider.findAll().then(routes => myRoutes = routes)
             ]).then(() => {
                 let graph = new Graph()
-                for(let route of myRoutes)
+                let airportMap = {};
+                for (let airport of myAirports)
                 {
+                    airportMap[airport.iataCode] = airport;
+                }
+                let measure = new SphereDistanceCalculator();
+                let skipCount = 0;
+                for (let route of myRoutes)
+                {
+                    if (airportMap[route.originIataCode] === undefined || airportMap[route.destinationIataCode] === undefined)
+                    {
+                        skipCount++;
+                        continue;
+                    }
                     graph.addEdge(route.originIataCode, route.destinationIataCode);
                 }
+                console.log("Skipped", skipCount, "routes");
                 let metric = <Metric<Vertex>> {
                     findDistance(a: Vertex, b: Vertex): number {
-                        return 1;
+                        return measure.findDistance(airportMap[a], airportMap[b]);
                     }
                 };
                 let ret = new Dijkstra(graph, metric).findShortestPath(data)

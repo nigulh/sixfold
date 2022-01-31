@@ -27,7 +27,7 @@ export class Dijkstra implements ShortestPath{
         while(queue.length > 0)
         {
             let [cur, prev, curDistance] = queue.dequeue();
-            if ((visited[cur] ?? Infinity) < curDistance) continue;
+            if ((visited[cur] ?? Infinity) <= curDistance) continue;
             console.log("expanding from node: " + [cur, curDistance]);
             processedCounter += 1;
             visited[cur] = curDistance;
