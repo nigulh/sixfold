@@ -8,18 +8,20 @@ const PriorityQueue = require('js-priority-queue');
 
 interface ShortestPathNode
 {
-    vertex: Vertex;
+    vertex: Vertex,
+    getHash: () => string,
 }
 
 class ShortestPathState
 {
     queue: typeof PriorityQueue;
-    visited: { [K in Vertex]?: number } = {};
-    prevNode: { [K in Vertex]?: Vertex } = {};
+    visited: { [K in string]?: number } = {};
+    prevNode: { [K in Vertex]?: string } = {};
     insertedCounter = 0;
     processedCounter = 0;
-    curVertex?: Vertex = undefined;
+    curNode?: ShortestPathNode = undefined;
     curDistance = 0;
+    nodeMap: { [K in string]?: ShortestPathNode } = {};
 
     constructor() {
         this.queue = new PriorityQueue({comparator: function([a1, a2, a], [b1, b2, b]) {
@@ -27,21 +29,22 @@ class ShortestPathState
             }});
     }
 
-    insert(newState: Vertex, distance: number) {
-        this.queue.queue([newState, this.curVertex, this.curDistance + distance]);
+    insert(newNode: ShortestPathNode, distance: number) {
+        this.nodeMap[newNode.getHash()] = newNode;
+        this.queue.queue([newNode.getHash(), this.curNode?.getHash(), this.curDistance + distance]);
         this.insertedCounter += 1;
     }
 
-    retrieve() {
+    retrieve(): ShortestPathNode | undefined {
         while (this.queue.length > 0) {
-            let [cur, prev, curDistance] = this.queue.dequeue();
-            if (this.findMinimumDistanceSoFar(cur) <= curDistance) continue;
+            let [curId, prevId, curDistance] = this.queue.dequeue();
+            if (this.findMinimumDistanceSoFar(curId) <= curDistance) continue;
             this.processedCounter += 1;
-            this.visited[cur] = curDistance;
-            this.prevNode[cur] = prev;
-            this.curVertex = cur;
+            this.visited[curId] = curDistance;
+            this.prevNode[curId] = prevId;
+            this.curNode = this.nodeMap[curId];
             this.curDistance = curDistance;
-            return cur;
+            return this.curNode;
         }
         return undefined;
     }
@@ -52,11 +55,11 @@ class ShortestPathState
 
     backtrackPath() {
         let ret: Array<Vertex> = [];
-        let vertex = this.curVertex;
-        while (vertex !== undefined)
+        let curNode = this.curNode;
+        while (curNode !== undefined)
         {
-            ret.push(vertex);
-            vertex = this.prevNode[vertex];
+            ret.push(curNode.vertex);
+            curNode = this.nodeMap[this.prevNode[curNode.getHash()] ?? ""];
         }
         return ret.reverse();
     }
@@ -74,19 +77,19 @@ export class Dijkstra implements ShortestPath {
 
     findShortestPath(task: ShortestPathRequest): ShortestPathResponse {
         let state = new ShortestPathState();
-        let curState;
+        let curState: ShortestPathNode | undefined;
 
-        state.insert(task.originIataCode, 0);
+        state.insert(<ShortestPathNode>{vertex: task.originIataCode, getHash: () => { return task.originIataCode; }}, 0);
         while (curState = state.retrieve())
         {
-            if (curState == task.destinationIataCode) {
+            if (curState.vertex == task.destinationIataCode) {
                 let ret = {distance: state.curDistance, path: state.backtrackPath()};
                 console.log({inserted: state.insertedCounter, processed: state.processedCounter}, ret);
                 return ret;
             }
 
-            for (let next of this.graph.getAdjacentFrom(curState)) {
-                state.insert(next, this.metric.findDistance(curState, next));
+            for (let next of this.graph.getAdjacentFrom(curState.vertex)) {
+                state.insert(<ShortestPathNode>{vertex: next, getHash: () => { return next; }}, this.metric.findDistance(curState.vertex, next));
             }
         }
         return {distance: Infinity, path: []};
