@@ -27,5 +27,5 @@ import {Route} from "./Route";
 export interface ShortestPathResponse {
     distance: number,
     deviation?: number,
-    steps: Array<[Vertex, Vertex]|Route>,
+    steps: Array<[Vertex, Vertex, string]|Route>,
 }

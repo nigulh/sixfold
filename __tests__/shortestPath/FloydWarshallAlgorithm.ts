@@ -56,7 +56,7 @@ export class FloydWarshallAlgorithm implements ShortestPathFinder {
         }
         let prev = this.prevs[from][to];
         if (prev == undefined) {
-            return [[from, to]];
+            return [[from, to, "->"]];
         }
         return this.backtrackPath(from, prev).concat(this.backtrackPath(prev, to));
     }

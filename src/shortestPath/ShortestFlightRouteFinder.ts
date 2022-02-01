@@ -41,7 +41,7 @@ export class ShortestFlightRouteFinder implements ShortestPathFinder {
         {
             curState = state.getCurrent();
             if (curState.vertex == task.destinationIataCode) {
-                let ret = <ShortestPathResponse>{distance: state.getCurrentDistance(), steps: state.getPathFromRootToCurrent().map(([x, y]) => [x.vertex, y.vertex])};
+                let ret = <ShortestPathResponse>{distance: state.getCurrentDistance(), steps: state.getPathFromRootToCurrent().map(([x, y]) => [x.vertex, y.vertex, x.isTransferAvailable && !y.isTransferAvailable ? "=>" : "->"])};
                 console.log({inserted: state.insertedCounter, processed: state.processedCounter}, ret);
                 return ret;
             }
