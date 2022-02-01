@@ -2,8 +2,8 @@ import {ShortestPathRequest} from "../models/ShortestPathRequest";
 import {Graph, Vertex} from "../shortestPath/Graph";
 import {Airport} from "../models/Airport";
 import {Route} from "../models/Route";
-import {Dijkstra} from "../shortestPath/Dijkstra";
-import {Metric} from "../shortestPath/Metric";
+import {ShortestFlightRouteFinder} from "../shortestPath/ShortestFlightRouteFinder";
+import {Metric} from "../utils/Metric";
 import {SphereDistanceCalculator} from "../utils/SphereDistanceCalculator";
 import {AirportDistanceCalculator} from "../shortestPath/AirportDistanceCalculator";
 
@@ -33,7 +33,7 @@ export class ShortestPathHandler
                         return measure.findDistance(airportMap[a], airportMap[b]);
                     }
                 };
-                let ret = new Dijkstra(graph, metric).findShortestPath(data);
+                let ret = new ShortestFlightRouteFinder(graph, metric).findShortestPath(data);
                 if (ret.distance == Infinity)
                 {
                     reject("Could not find route");

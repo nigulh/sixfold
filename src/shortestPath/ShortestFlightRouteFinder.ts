@@ -1,9 +1,9 @@
 import {Graph, Vertex} from "./Graph";
 import {ShortestPathRequest} from "../models/ShortestPathRequest";
 import {ShortestPathResponse} from "../models/ShortestPathResponse";
-import {Metric} from "./Metric";
-import {ShortestPath} from "./ShortestPathTask";
-import {Hashable, PriorityQueueWithPath} from "./PriorityQueueWithPath";
+import {Metric} from "../utils/Metric";
+import {ShortestPathFinder} from "./ShortestPathFinder";
+import {Hashable, PriorityQueueWithPath} from "../utils/PriorityQueueWithPath";
 
 class AirportNode implements Hashable
 {
@@ -20,7 +20,7 @@ class AirportNode implements Hashable
     }
 }
 
-export class Dijkstra implements ShortestPath {
+export class ShortestFlightRouteFinder implements ShortestPathFinder {
     private graph: Graph
     private metric: Metric<Vertex>;
 

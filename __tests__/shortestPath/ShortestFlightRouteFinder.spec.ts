@@ -1,6 +1,6 @@
 import {Graph, Vertex} from "../../src/shortestPath/Graph";
-import {Dijkstra} from "../../src/shortestPath/Dijkstra";
-import {Metric} from "../../src/shortestPath/Metric";
+import {ShortestFlightRouteFinder} from "../../src/shortestPath/ShortestFlightRouteFinder";
+import {Metric} from "../../src/utils/Metric";
 import {FloydWarshallAlgorithm} from "./FloydWarshallAlgorithm";
 import {ShortestPathRequest} from "../../src/models/ShortestPathRequest";
 
@@ -34,7 +34,7 @@ describe('Dijkstra', () => {
         it(key, () => {
             let graph = buildGraph(edges);
             let problem = {originIataCode: <string>source, destinationIataCode: <string>target}
-            let dijkstra = new Dijkstra(<Graph>graph, edgeCountMetric);
+            let dijkstra = new ShortestFlightRouteFinder(<Graph>graph, edgeCountMetric);
             let bruteForce = new FloydWarshallAlgorithm(<Graph>graph, edgeCountMetric);
 
             let x = dijkstra.findShortestPath(problem);
@@ -54,7 +54,7 @@ describe("Dijkstra vs Flowyd", () => {
         "5": "62",
         "6": "1",
     });
-    let dijkstra = new Dijkstra(graph, edgeCountMetric);
+    let dijkstra = new ShortestFlightRouteFinder(graph, edgeCountMetric);
     let bruteForce = new FloydWarshallAlgorithm(graph, edgeCountMetric)
     it("same values for all", () => {
        for(let source of graph.getVertices()) {

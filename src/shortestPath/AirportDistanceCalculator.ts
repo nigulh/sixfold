@@ -1,4 +1,4 @@
-import {Metric} from "./Metric";
+import {Metric} from "../utils/Metric";
 import {Airport} from "../models/Airport";
 import {SphereDistanceCalculator} from "../utils/SphereDistanceCalculator";
 

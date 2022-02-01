@@ -1,10 +1,10 @@
-import {ShortestPath} from "../../src/shortestPath/ShortestPathTask";
+import {ShortestPathFinder} from "../../src/shortestPath/ShortestPathFinder";
 import {Graph, Vertex} from "../../src/shortestPath/Graph";
-import {Metric} from "../../src/shortestPath/Metric";
+import {Metric} from "../../src/utils/Metric";
 import {ShortestPathRequest} from "../../src/models/ShortestPathRequest";
 import {ShortestPathResponse} from "../../src/models/ShortestPathResponse";
 
-export class FloydWarshallAlgorithm implements ShortestPath {
+export class FloydWarshallAlgorithm implements ShortestPathFinder {
     distances = {}
     prevs = {}
 

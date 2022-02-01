@@ -21,6 +21,7 @@ docker-compose up
 If it succeeds, then open [Swagger UI](http://localhost:3080/) in your web browser.
 
 ## Features
+* api/swagger.json is the api documentation, used by the swagger service 
 * `/airways/shortestPath` is the main route
 * Database is "implemented" as a text file
 * To find shortest path we use modified Dijkstra algorithm. The vertices are `AirportNode`s, with
