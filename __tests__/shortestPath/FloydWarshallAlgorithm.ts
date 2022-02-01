@@ -61,3 +61,8 @@ export class FloydWarshallAlgorithm implements ShortestPath {
         return this.backtrackPath(from, prev).concat(this.backtrackPath(prev, to));
     }
 }
+
+describe('Ignore', () => {
+    it('fix jest config', () => {
+    });
+});

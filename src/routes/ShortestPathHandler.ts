@@ -4,15 +4,14 @@ import {Airport} from "../models/Airport";
 import {Route} from "../models/Route";
 import {Dijkstra} from "../shortestPath/Dijkstra";
 import {Metric} from "../shortestPath/Metric";
-import {SphereDistanceCalculator} from "../SphereDistanceCalculator";
+import {SphereDistanceCalculator} from "../utils/SphereDistanceCalculator";
+import {AirportDistanceCalculator} from "../shortestPath/AirportDistanceCalculator";
 
 const {AirportProvider} = require("../provider/AirportProvider");
 const {RouteProvider} = require("../provider/RouteProvider");
 
 let airportProvider = new AirportProvider();
 let routeProvider = new RouteProvider();
-
-const EARTH_RADIUS_IN_KM = 6371;
 
 export class ShortestPathHandler
 {
@@ -28,7 +27,7 @@ export class ShortestPathHandler
             ]).then(() => {
                 let airportMap = this.buildAirportsMap(myAirports);
                 let graph = this.buildGraph(myRoutes, airportMap);
-                let measure = new SphereDistanceCalculator(EARTH_RADIUS_IN_KM);
+                let measure = new AirportDistanceCalculator();
                 let metric = <Metric<Vertex>> {
                     findDistance(a: Vertex, b: Vertex): number {
                         return measure.findDistance(airportMap[a], airportMap[b]);

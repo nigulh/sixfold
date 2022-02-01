@@ -1,10 +1,8 @@
-import {SphereDistanceCalculator} from "../src/SphereDistanceCalculator";
-
-let calculator = new SphereDistanceCalculator();
+import {SphereDistanceCalculator} from "../../src/utils/SphereDistanceCalculator";
 
 describe('Sphere distance', () => {
     it('distance to self is zero', () => {
-        expect(calculator._findDistance(3, 2, 3, 2)).toBeCloseTo(0.0, 7);
+        expect(SphereDistanceCalculator.findDistance(3, 2, 3, 2)).toBeCloseTo(0.0, 7);
     });
     describe("distance to antipode is half perimeter", () => {
         let cases = {
@@ -15,7 +13,7 @@ describe('Sphere distance', () => {
         };
         Object.entries(cases).forEach(([key, [N, E]]) => {
             it(key, () => {
-                expect(calculator._findDistance(2, 3, N, E) + calculator._findDistance(N, E, -2, 183)).toBeCloseTo(Math.PI, 7);
+                expect(SphereDistanceCalculator.findDistance(2, 3, N, E) + SphereDistanceCalculator.findDistance(N, E, -2, 183)).toBeCloseTo(Math.PI, 7);
             });
         });
     });
