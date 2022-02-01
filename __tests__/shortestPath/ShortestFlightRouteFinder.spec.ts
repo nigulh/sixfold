@@ -77,5 +77,24 @@ describe("Dijkstra vs Flowyd", () => {
            }
        }
     });
+
+    let equivalentGraph = new Graph();
+    equivalentGraph.equivalencyList = graph.adjacencyList;
+    let equivalentDijkstra = new ShortestFlightRouteFinder(equivalentGraph, edgeCountMetric);
+    it("equivalency works", () => {
+        for(let source of graph.getVertices()) {
+            for (let target of graph.getVertices()) {
+                let problem = <ShortestPathRequest>{originIataCode: source, destinationIataCode: target};
+
+                let actual = dijkstra.findShortestPath(problem);
+                let equivalentSolution = equivalentDijkstra.findShortestPath(problem);
+                if (actual.distance <= 1) {
+                    expect(equivalentSolution.distance).toEqual(actual.distance);
+                } else {
+                    expect(equivalentSolution.distance).toEqual(Infinity);
+                }
+            }
+        }
+    });
 })
 

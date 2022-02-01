@@ -9,14 +9,16 @@ class AirportNode implements Hashable
 {
     vertex: Vertex;
     flightsRemaining: number;
+    isTransferAvailable: boolean;
 
-    constructor(vertex: Vertex, flightsRemaining: number) {
+    constructor(vertex: Vertex, flightsRemaining: number, isTransferAvailable: boolean) {
         this.vertex = vertex;
         this.flightsRemaining = flightsRemaining;
+        this.isTransferAvailable = isTransferAvailable;
     }
 
     getHash() {
-        return <string>this.vertex + this.flightsRemaining;
+        return <string>this.vertex + this.flightsRemaining + this.isTransferAvailable;
     }
 }
 
@@ -32,7 +34,7 @@ export class ShortestFlightRouteFinder implements ShortestPathFinder {
     findShortestPath(task: ShortestPathRequest): ShortestPathResponse {
         let state = new PriorityQueueWithPath<AirportNode>();
         let numFlights = task.numFlightsUpperBound ?? Infinity;
-        let curState: AirportNode | undefined = new AirportNode(task.originIataCode, numFlights);
+        let curState: AirportNode | undefined = new AirportNode(task.originIataCode, numFlights, true);
 
         state.insert(curState, this.metric.findDistance(task.originIataCode, task.destinationIataCode));
         do
@@ -49,12 +51,23 @@ export class ShortestFlightRouteFinder implements ShortestPathFinder {
             }
 
             for (let next of this.graph.getAdjacentFrom(curState.vertex)) {
-                let extraDistance = this.metric.findDistance(curState.vertex, next) + this.metric.findDistance(next, task.destinationIataCode) - this.metric.findDistance(curState.vertex, task.destinationIataCode);
-                state.insert(new AirportNode(next, curState.flightsRemaining - 1), extraDistance);
+                let extraDistance = this.findExtraDistance(curState.vertex, next, task.destinationIataCode);
+                state.insert(new AirportNode(next, curState.flightsRemaining - 1, true), extraDistance);
+            }
+
+            if (curState.isTransferAvailable) {
+                for (let next of this.graph.getEquivalentFrom(curState.vertex))
+                {
+                    let extraDistance = this.findExtraDistance(curState.vertex, next, task.destinationIataCode);
+                    state.insert(new AirportNode(next, curState.flightsRemaining, false), extraDistance);
+                }
             }
 
         } while (!state.processCurrent())
         return {distance: Infinity, steps: []};
     }
 
+    private findExtraDistance(from: Vertex, next: Vertex, to: string) {
+        return this.metric.findDistance(from, next) + this.metric.findDistance(next, to) - this.metric.findDistance(from, to);
+    }
 }

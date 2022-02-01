@@ -7,8 +7,16 @@ export class Graph {
         [K in Vertex]?: Vertex[]
     } = {}
 
+    equivalencyList: {
+        [K in Vertex]?: Vertex[]
+    } = {}
+
     ensureVertex(value: Vertex) {
         this.adjacencyList[value] = this.adjacencyList[value] ?? [];
+    }
+
+    getVertices() {
+        return Object.keys(this.adjacencyList);
     }
 
     addEdge(vertex1: Vertex, vertex2: Vertex) {
@@ -17,12 +25,19 @@ export class Graph {
         this.adjacencyList[vertex1]?.push(vertex2)
     }
 
-    getVertices() {
-        return Object.keys(this.adjacencyList);
-    }
-
     getAdjacentFrom(vertex: Vertex): Array<Vertex> {
         return this.adjacencyList[vertex] ?? [];
     }
+
+    addEquivalency(vertex1: Vertex, vertex2: Vertex) {
+        this.ensureVertex(vertex1);
+        this.ensureVertex(vertex2);
+        this.equivalencyList[vertex1]?.push(vertex2)
+    }
+
+    getEquivalentFrom(vertex: Vertex): Array<Vertex> {
+        return this.equivalencyList[vertex] ?? [];
+    }
+
 }
 
