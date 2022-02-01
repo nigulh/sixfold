@@ -12,6 +12,7 @@ let routeProvider = new RouteProvider();
  *     tags:
  *       - airways
  *     summary: List all airports
+ *     description: Swagger UI fails. Use <a href="http://localhost:3033/airports">this link</a> to get all airports.
  *     responses:
  *       200:
  *         description: List of airports
