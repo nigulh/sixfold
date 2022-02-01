@@ -2,6 +2,7 @@ import {Graph, Vertex} from "../../src/shortestPath/Graph";
 import {Dijkstra} from "../../src/shortestPath/Dijkstra";
 import {Metric} from "../../src/shortestPath/Metric";
 import {FloydWarshallAlgorithm} from "./FloydWarshallAlgorithm";
+import {ShortestPathRequest} from "../../src/models/ShortestPathRequest";
 
 
 function buildGraph(edges) {
@@ -58,11 +59,21 @@ describe("Dijkstra vs Flowyd", () => {
     it("same values for all", () => {
        for(let source of graph.getVertices()) {
            for (let target of graph.getVertices()) {
-               let problem = {originIataCode: source, destinationIataCode: target};
+               let problem = <ShortestPathRequest>{originIataCode: source, destinationIataCode: target};
 
                let actual = dijkstra.findShortestPath(problem);
                let expected = bruteForce.findShortestPath(problem);
                expect(actual.distance).toEqual(expected.distance);
+
+               problem.numFlightsUpperBound = expected.steps.length;
+               expect(dijkstra.findShortestPath(problem).distance).toEqual(expected.distance);
+               problem.numFlightsUpperBound += 1;
+               expect(dijkstra.findShortestPath(problem).distance).toEqual(expected.distance);
+               problem.numFlightsUpperBound -= 2;
+               if (problem.numFlightsUpperBound >= 0) {
+                   actual = dijkstra.findShortestPath(problem);
+                   expect(actual.distance).toBeGreaterThan(expected.distance);
+               }
            }
        }
     });

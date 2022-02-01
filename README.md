@@ -31,6 +31,5 @@ distance from source to current node with best-case estimated distance from curr
 ## TODOs
 * Swagger UI fails to retrieve all airports.
 * Transfers with 50km limit is not implemented (yet).
-* Unittests for limited number of flights
 * I could not find Swagger suitable generation tool, documentation might get outdated due to refactorings
 * Swagger validation is missing
