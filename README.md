@@ -30,6 +30,5 @@ distance from source to current node with best-case estimated distance from curr
 * ```jest``` for unittests
 
 ## TODOs
-* Transfers with 50km limit is not implemented (yet).
 * I could not find Swagger suitable generation tool, documentation might get outdated due to refactorings
 * Swagger validation is missing
