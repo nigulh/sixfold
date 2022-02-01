@@ -91,11 +91,19 @@ export class ShortestPathHandler
         let buckets: {[K in number]: Array<Airport>} = {};
         let getBucketId = latitude => Math.floor(latitude);
         for (let airport of myAirports) {
+            if (graph.adjacencyList[airport.iataCode] == undefined)
+            {
+                continue;
+            }
             let bucketId = getBucketId(airport.latitude);
             buckets[bucketId] = (buckets[bucketId] ?? []);
             buckets[bucketId].push(airport);
         }
         for (let airport of myAirports) {
+            if (graph.adjacencyList[airport.iataCode] == undefined)
+            {
+                continue;
+            }
             let minLatitude = airport.latitude - distanceInDegrees;
             let maxLatitude = airport.latitude + distanceInDegrees;
             for (let b = getBucketId(minLatitude); b <= getBucketId(maxLatitude); b++) {
