@@ -33,3 +33,4 @@ distance from source to current node with best-case estimated distance from curr
 ## TODOs
 * I could not find Swagger suitable generation tool, documentation might get outdated due to refactorings
 * Swagger validation is missing
+* Configure WebStorm formatting settings to match my usual style.
