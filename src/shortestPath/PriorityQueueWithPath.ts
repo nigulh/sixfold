@@ -7,11 +7,9 @@ export interface Hashable {
 export class PriorityQueueWithPath<T extends Hashable> {
     private queue: typeof PriorityQueue;
     private bestDistance: { [K in string]?: number } = {};
-    private prevNode: { [K in string]?: string } = {};
+    private prevHash: { [K in string]?: string } = {};
     insertedCounter = 0;
     processedCounter = 0;
-    curNode?: T = undefined;
-    curDistance = 0;
     private nodeMap: { [K in string]?: T } = {};
 
     constructor() {
@@ -24,34 +22,48 @@ export class PriorityQueueWithPath<T extends Hashable> {
 
     insert(newNode: T, distance: number) {
         this.nodeMap[newNode.getHash()] = newNode;
-        this.queue.queue([newNode.getHash(), this.curNode?.getHash(), this.curDistance + distance]);
+        this.queue.queue([newNode.getHash(), this.queue.length == 0 ? undefined : this.getCurrent()?.getHash(), this.getCurrentDistance() + distance]);
         this.insertedCounter += 1;
     }
 
-    retrieve(): T | undefined {
-        while (this.queue.length > 0) {
-            let [curId, prevId, curDistance] = this.queue.dequeue();
-            let curNode = this.nodeMap[curId];
-            if (curNode == undefined) throw new Error("Expected node to be in map");
-            if ((this.bestDistance[curNode.getHash()] ?? Infinity) <= curDistance) continue;
-            this.curNode = curNode;
-            this.processedCounter += 1;
-            this.bestDistance[curId] = curDistance;
-            this.prevNode[curId] = prevId;
-            this.curDistance = curDistance;
-            return this.curNode;
-        }
-        return undefined;
+    getCurrent(): T {
+        return <T>this.nodeMap[this.queue.peek()[0]];
     }
 
-    backtrackPath(): Array<[T, T]> {
+    getCurrentDistance(): number {
+        if (this.queue.length == 0) {
+            return 0;
+        }
+        return this.queue.peek()[2];
+    }
+
+    processCurrent(): boolean {
+        let [curHash, prevHash, curDistance] = this.queue.dequeue();
+        this.processedCounter += 1;
+        this.bestDistance[curHash] = curDistance;
+        this.prevHash[curHash] = prevHash;
+        return this.isEmpty();
+    }
+
+    private isEmpty(): boolean {
+        while (this.queue.length > 0) {
+            let [curHash, prevHash, curDistance] = this.queue.peek();
+            if ((this.bestDistance[curHash] ?? Infinity) > curDistance) {
+                return false;
+            }
+            this.queue.dequeue();
+        }
+        return true;
+    }
+
+    getPathFromRootToCurrent(): Array<[T, T]> {
         let ret: Array<[T, T]> = [];
-        let curNode = this.curNode;
-        while (curNode !== undefined) {
-            let prevNode = this.nodeMap[this.prevNode[curNode.getHash()] ?? ""];
-            if (prevNode == undefined) break;
+        let curNode = this.getCurrent();
+        let prevNode = this.nodeMap[this.queue.peek()[1]];
+        while (curNode !== undefined && prevNode !== undefined) {
             ret.push([prevNode, curNode]);
             curNode = prevNode;
+            prevNode = this.nodeMap[this.prevHash[curNode.getHash()] ?? ""];
         }
         return ret.reverse();
     }

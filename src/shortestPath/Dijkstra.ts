@@ -31,14 +31,15 @@ export class Dijkstra implements ShortestPath {
 
     findShortestPath(task: ShortestPathRequest): ShortestPathResponse {
         let state = new PriorityQueueWithPath<AirportNode>();
-        let curState: AirportNode | undefined;
         let numFlights = task.numFlightsUpperBound ?? Infinity;
+        let curState: AirportNode | undefined = new AirportNode(task.originIataCode, numFlights);
 
-        state.insert(new AirportNode(task.originIataCode, numFlights), this.metric.findDistance(task.originIataCode, task.destinationIataCode));
-        while (curState = state.retrieve())
+        state.insert(curState, this.metric.findDistance(task.originIataCode, task.destinationIataCode));
+        do
         {
+            curState = state.getCurrent();
             if (curState.vertex == task.destinationIataCode) {
-                let ret = <ShortestPathResponse>{distance: state.curDistance, steps: state.backtrackPath().map(([x, y]) => [x.vertex, y.vertex])};
+                let ret = <ShortestPathResponse>{distance: state.getCurrentDistance(), steps: state.getPathFromRootToCurrent().map(([x, y]) => [x.vertex, y.vertex])};
                 console.log({inserted: state.insertedCounter, processed: state.processedCounter}, ret);
                 return ret;
             }
@@ -51,7 +52,8 @@ export class Dijkstra implements ShortestPath {
                 let extraDistance = this.metric.findDistance(curState.vertex, next) + this.metric.findDistance(next, task.destinationIataCode) - this.metric.findDistance(curState.vertex, task.destinationIataCode);
                 state.insert(new AirportNode(next, curState.flightsRemaining - 1), extraDistance);
             }
-        }
+
+        } while (!state.processCurrent())
         return {distance: Infinity, steps: []};
     }
 
