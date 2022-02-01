@@ -101,7 +101,7 @@ export class ShortestPathHandler
             for (let b = getBucketId(minLatitude); b <= getBucketId(maxLatitude); b++) {
                 for (let otherAirport of buckets[b] ?? []) {
                     let distance = measure.findDistance(airport, otherAirport);
-                    if (distance <= maxTransferDistance)
+                    if (distance <= maxTransferDistance && airport != otherAirport)
                     {
                         graph.addEquivalency(airport.iataCode, otherAirport.iataCode);
                     }
