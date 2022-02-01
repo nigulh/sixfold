@@ -25,36 +25,42 @@ export class ShortestPathHandler
                 airportProvider.findAll().then(airports => myAirports = airports),
                 routeProvider.findAll().then(routes => myRoutes = routes)
             ]).then(() => {
-                let airportMap = this.buildAirportsMap(myAirports);
-                let measure = new AirportDistanceCalculator();
-                let metric = <Metric<Vertex>> {
-                    findDistance(a: Vertex, b: Vertex): number {
-                        return measure.findDistance(airportMap[a], airportMap[b]);
-                    }
-                };
-                let graph = new Graph();
-                this.addRoutes(graph, myRoutes, airportMap);
                 try {
-                    if ((data.maxTransferDistance ?? 0) > 101) {
-                        reject("maxTransferDistance too big");
+                    let airportMap = this.buildAirportsMap(myAirports);
+                    let source = airportMap[data.originIataCode];
+                    let target = airportMap[data.destinationIataCode];
+                    if (source == undefined || target == undefined)
+                    {
+                        reject("Cannot find airport");
                     }
-                    if ((data.maxTransferDistance ?? 0) > 0) {
-                        this.addTransfers(graph, myAirports, data.maxTransferDistance ?? 0, measure);
+                    let measure = new AirportDistanceCalculator();
+                    let metric = <Metric<Vertex>> {
+                        findDistance(a: Vertex, b: Vertex): number {
+                            return measure.findDistance(airportMap[a], airportMap[b]);
+                        }
+                    };
+                    let graph = new Graph();
+                    this.addRoutes(graph, myRoutes, airportMap);
+                        if ((data.maxTransferDistance ?? 0) > 101) {
+                            reject("maxTransferDistance too big");
+                        }
+                        if ((data.maxTransferDistance ?? 0) > 0) {
+                            this.addTransfers(graph, myAirports, data.maxTransferDistance ?? 0, measure);
+                        }
+                    let ret = new ShortestFlightRouteFinder(graph, metric).findShortestPath(data);
+                    if (ret.distance == Infinity)
+                    {
+                        reject("Could not find route");
+                        return;
                     }
+                    let optimalDistance = measure.findDistance(source, target);
+                    ret.deviation = optimalDistance == 0 ? (ret.distance == 0 ? 0 : Infinity) : ret.distance / optimalDistance - 1;
+                    resolve(ret);
                 } catch (err) {
                     console.log("nb", err);
                     reject(err);
                     return;
                 }
-                let ret = new ShortestFlightRouteFinder(graph, metric).findShortestPath(data);
-                if (ret.distance == Infinity)
-                {
-                    reject("Could not find route");
-                    return;
-                }
-                let optimalDistance = measure.findDistance(airportMap[data.originIataCode], airportMap[data.destinationIataCode]);
-                ret.deviation = optimalDistance == 0 ? (ret.distance == 0 ? 0 : Infinity) : ret.distance / optimalDistance - 1;
-                resolve(ret);
             }).catch(e => reject(e))
         });
     }

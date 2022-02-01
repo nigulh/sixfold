@@ -47,10 +47,8 @@ export class ShortestFlightRouteFinder implements ShortestPathFinder {
             }
 
             if (curState.isTransferAvailable) {
-                console.log("transfer from", curState.vertex);
                 for (let next of this.graph.getEquivalentFrom(curState.vertex)) {
                     let extraDistance = this.findExtraDistance(curState.vertex, next, task.destinationIataCode);
-                    console.log(curState.vertex, next, extraDistance);
                     state.insert(new AirportNode(next, curState.flightsRemaining, false), extraDistance);
                 }
             }
