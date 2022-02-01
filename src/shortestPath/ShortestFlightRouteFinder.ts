@@ -46,6 +46,15 @@ export class ShortestFlightRouteFinder implements ShortestPathFinder {
                 return ret;
             }
 
+            if (curState.isTransferAvailable) {
+                console.log("transfer from", curState.vertex);
+                for (let next of this.graph.getEquivalentFrom(curState.vertex)) {
+                    let extraDistance = this.findExtraDistance(curState.vertex, next, task.destinationIataCode);
+                    console.log(curState.vertex, next, extraDistance);
+                    state.insert(new AirportNode(next, curState.flightsRemaining, false), extraDistance);
+                }
+            }
+
             if (curState.flightsRemaining == 0) {
                 continue;
             }
@@ -53,14 +62,6 @@ export class ShortestFlightRouteFinder implements ShortestPathFinder {
             for (let next of this.graph.getAdjacentFrom(curState.vertex)) {
                 let extraDistance = this.findExtraDistance(curState.vertex, next, task.destinationIataCode);
                 state.insert(new AirportNode(next, curState.flightsRemaining - 1, true), extraDistance);
-            }
-
-            if (curState.isTransferAvailable) {
-                for (let next of this.graph.getEquivalentFrom(curState.vertex))
-                {
-                    let extraDistance = this.findExtraDistance(curState.vertex, next, task.destinationIataCode);
-                    state.insert(new AirportNode(next, curState.flightsRemaining, false), extraDistance);
-                }
             }
 
         } while (!state.processCurrent())

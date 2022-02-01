@@ -26,13 +26,26 @@ export class ShortestPathHandler
                 routeProvider.findAll().then(routes => myRoutes = routes)
             ]).then(() => {
                 let airportMap = this.buildAirportsMap(myAirports);
-                let graph = this.buildGraph(myRoutes, airportMap);
                 let measure = new AirportDistanceCalculator();
                 let metric = <Metric<Vertex>> {
                     findDistance(a: Vertex, b: Vertex): number {
                         return measure.findDistance(airportMap[a], airportMap[b]);
                     }
                 };
+                let graph = new Graph();
+                this.addRoutes(graph, myRoutes, airportMap);
+                try {
+                    if ((data.maxTransferDistance ?? 0) > 101) {
+                        reject("maxTransferDistance too big");
+                    }
+                    if ((data.maxTransferDistance ?? 0) > 0) {
+                        this.addTransfers(graph, myAirports, data.maxTransferDistance ?? 0, measure);
+                    }
+                } catch (err) {
+                    console.log("nb", err);
+                    reject(err);
+                    return;
+                }
                 let ret = new ShortestFlightRouteFinder(graph, metric).findShortestPath(data);
                 if (ret.distance == Infinity)
                 {
@@ -54,8 +67,7 @@ export class ShortestPathHandler
         return airportMap;
     }
 
-    private buildGraph(myRoutes: Array<Route>, airportMap: {}) {
-        let graph = new Graph()
+    private addRoutes(graph: Graph, myRoutes: Array<Route>, airportMap: {}) {
         let skipCount = 0;
         for (let route of myRoutes) {
             if (airportMap[route.originIataCode] === undefined || airportMap[route.destinationIataCode] === undefined) {
@@ -67,4 +79,31 @@ export class ShortestPathHandler
         console.log("Skipped", skipCount, "routes");
         return graph;
     }
+
+    private addTransfers(graph: Graph, myAirports: Array<Airport>, maxTransferDistance: number, measure: AirportDistanceCalculator) {
+        let distanceInDegrees = 180 / Math.PI * maxTransferDistance / measure.radius;
+        let buckets: {[K in number]: Array<Airport>} = {};
+        let getBucketId = latitude => Math.floor(latitude);
+        for (let airport of myAirports) {
+            let bucketId = getBucketId(airport.latitude);
+            buckets[bucketId] = (buckets[bucketId] ?? []);
+            buckets[bucketId].push(airport);
+        }
+        for (let airport of myAirports) {
+            let minLatitude = airport.latitude - distanceInDegrees;
+            let maxLatitude = airport.latitude + distanceInDegrees;
+            for (let b = getBucketId(minLatitude); b <= getBucketId(maxLatitude); b++) {
+                for (let otherAirport of buckets[b] ?? []) {
+                    let distance = measure.findDistance(airport, otherAirport);
+                    if (distance <= maxTransferDistance)
+                    {
+                        graph.addEquivalency(airport.iataCode, otherAirport.iataCode);
+                    }
+                }
+            }
+        }
+        console.log("buckets done");
+    }
+
+
 }

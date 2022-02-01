@@ -13,6 +13,7 @@ export class Graph {
 
     ensureVertex(value: Vertex) {
         this.adjacencyList[value] = this.adjacencyList[value] ?? [];
+        this.equivalencyList[value] = this.equivalencyList[value] ?? [];
     }
 
     getVertices() {
