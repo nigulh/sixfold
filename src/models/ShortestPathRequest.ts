@@ -10,15 +10,21 @@
  *         destinationIataCode:
  *           type: string
  *           example: HEL
- *         numFlightsUpperBound:
+ *         maxNumFlights:
  *           summary: if empty, then no upper bound
  *           type: integer
  *           example: 3
+ *           nullable: true
+ *         maxTransferDistance:
+ *           summary: if empty or zero, then no transfers allowed
+ *           type: integer
+ *           example: 50
  *           nullable: true
  */
 
 export interface ShortestPathRequest {
     originIataCode: string
     destinationIataCode: string
-    numFlightsUpperBound?: number
+    maxNumFlights?: number
+    maxTransferDistance?: number
 }

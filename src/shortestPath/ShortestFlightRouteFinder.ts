@@ -33,7 +33,7 @@ export class ShortestFlightRouteFinder implements ShortestPathFinder {
 
     findShortestPath(task: ShortestPathRequest): ShortestPathResponse {
         let state = new PriorityQueueWithPath<AirportNode>();
-        let numFlights = task.numFlightsUpperBound ?? Infinity;
+        let numFlights = task.maxNumFlights ?? Infinity;
         let curState: AirportNode | undefined = new AirportNode(task.originIataCode, numFlights, true);
 
         state.insert(curState, this.metric.findDistance(task.originIataCode, task.destinationIataCode));

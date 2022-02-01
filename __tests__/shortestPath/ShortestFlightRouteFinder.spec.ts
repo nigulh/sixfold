@@ -65,12 +65,12 @@ describe("Dijkstra vs Flowyd", () => {
                let expected = bruteForce.findShortestPath(problem);
                expect(actual.distance).toEqual(expected.distance);
 
-               problem.numFlightsUpperBound = expected.steps.length;
+               problem.maxNumFlights = expected.steps.length;
                expect(dijkstra.findShortestPath(problem).distance).toEqual(expected.distance);
-               problem.numFlightsUpperBound += 1;
+               problem.maxNumFlights += 1;
                expect(dijkstra.findShortestPath(problem).distance).toEqual(expected.distance);
-               problem.numFlightsUpperBound -= 2;
-               if (problem.numFlightsUpperBound >= 0) {
+               problem.maxNumFlights -= 2;
+               if (problem.maxNumFlights >= 0) {
                    actual = dijkstra.findShortestPath(problem);
                    expect(actual.distance).toBeGreaterThan(expected.distance);
                }
